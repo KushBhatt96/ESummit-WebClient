@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  Avatar,
-  Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Button, Container } from "@mui/material";
 import { Product } from "../../models/Product";
+import ProductList from "./ProductList";
 
 function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,7 +19,7 @@ function Catalog() {
         id: prevState.length + 1,
         name: `name${prevState.length + 1}`,
         description: `desc${prevState.length + 1}`,
-        price: `price${prevState.length + 1}`,
+        price: prevState.length + 100,
         pictureUrl: "http://picsum.photos/200",
         brand: `brand${prevState.length + 1}`,
       },
@@ -34,18 +27,8 @@ function Catalog() {
   };
 
   return (
-    <>
-      <Typography variant="h3">Catalog</Typography>
-      <List>
-        {products.map((product) => (
-          <ListItem key={product.id}>
-            <ListItemAvatar>
-              <Avatar src={product.pictureUrl} />
-            </ListItemAvatar>
-            <ListItemText primary={`${product.name}-${product.price}`} />
-          </ListItem>
-        ))}
-      </List>
+    <Container>
+      <ProductList products={products} />
       <Button
         variant="contained"
         type="submit"
@@ -54,7 +37,7 @@ function Catalog() {
       >
         Add Player
       </Button>
-    </>
+    </Container>
   );
 }
 
