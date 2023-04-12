@@ -6,6 +6,9 @@ import Home from "../features/home/Home";
 import NotFound from "../features/notFound/NotFound";
 import Catalog from "../features/catalog/Catalog";
 import Header from "../common/Header";
+import ProductDetail from "../features/catalog/ProductDetail";
+import AboutPage from "../features/about/AboutPage";
+import ContactPage from "../features/contact/ContactPage";
 
 export function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -33,9 +36,6 @@ export function App() {
         dark: "#966a2f",
       },
     },
-    typography: {
-      fontFamily: ["Arial"],
-    },
   });
 
   return (
@@ -44,7 +44,12 @@ export function App() {
       <Header darkMode={darkMode} handleThemeChanged={handleThemeChanged} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/Catalog" element={<Catalog />} />
+        <Route path="/catalog">
+          <Route index element={<Catalog />} />
+          <Route path=":id" element={<ProductDetail />} />
+        </Route>
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>

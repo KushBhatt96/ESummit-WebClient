@@ -1,15 +1,29 @@
 import { useState, useEffect } from "react";
 import { Button, Container } from "@mui/material";
+import axios from "axios";
 import { Product } from "../../models/Product";
 import ProductList from "./ProductList";
 
 function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5119/api/products")
-      .then((response) => response.json())
-      .then((fetchedProducts: Product[]) => setProducts(fetchedProducts));
+    async function getProducts() {
+      try {
+        const response = await axios.get<Product[]>(
+          "http://localhost:5119/api/products"
+        );
+        const { data } = response;
+        setProducts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getProducts();
   }, []);
 
   const handleAddProduct = () => {
@@ -29,14 +43,6 @@ function Catalog() {
   return (
     <Container>
       <ProductList products={products} />
-      <Button
-        variant="contained"
-        type="submit"
-        aria-label="submit"
-        onClick={handleAddProduct}
-      >
-        Add Player
-      </Button>
     </Container>
   );
 }

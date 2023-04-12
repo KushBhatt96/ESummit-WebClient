@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Container, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 function NotFound() {
   return (
-    <>
-      <h1>Not Found</h1>
-      <Link to="/">GO HOME</Link>
-    </>
+    <Container>
+      <Typography variant="h2">404 Not Found</Typography>
+    </Container>
   );
 }
 
