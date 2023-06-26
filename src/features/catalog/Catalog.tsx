@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button, Container } from "@mui/material";
-import axios from "axios";
+import { Container } from "@mui/material";
+
 import { Product } from "../../models/Product";
 import ProductList from "./ProductList";
+import agent from "../../api/agent";
+import Loading, { LoadingSizes } from "../../common/Loading";
 
 function Catalog() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -11,10 +13,7 @@ function Catalog() {
   useEffect(() => {
     async function getProducts() {
       try {
-        const response = await axios.get<Product[]>(
-          "http://localhost:5119/api/products"
-        );
-        const { data } = response;
+        const data = await agent.Catalog.list();
         setProducts(data);
       } catch (error) {
         console.error(error);
@@ -39,6 +38,14 @@ function Catalog() {
       },
     ]);
   };
+
+  if (loading)
+    return (
+      <Loading
+        message="Loading product catalog..."
+        size={LoadingSizes.MEDIUM}
+      />
+    );
 
   return (
     <Container>

@@ -1,10 +1,9 @@
 import {
-  Avatar,
+  Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  CardHeader,
   CardMedia,
   Typography,
 } from "@mui/material";
@@ -20,31 +19,24 @@ function ProductCard({ product }: Props) {
 
   return (
     <Card sx={{ boxShadow: 4 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: "secondary.main" }}>
-            {name.charAt(0).toUpperCase()}
-          </Avatar>
-        }
-        title={name}
-        titleTypographyProps={{
-          sx: {
-            fontWeight: "bold",
-            color: "primary.main",
-          },
-        }}
-      />
       <CardMedia
         sx={{
-          height: 140,
+          height: 300,
           backgroundSize: "contain",
           bgcolor: "primary.light",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        image={pictureUrl}
         title={name}
-      />
+      >
+        <img src={pictureUrl} style={{ width: "80%", height: "80%" }} />
+      </CardMedia>
       <CardContent>
-        <Typography gutterBottom color="secondary" variant="h5">
+        <Typography gutterBottom color="primary" fontWeight="bold">
+          {name}
+        </Typography>
+        <Typography gutterBottom color="secondary" variant="h6">
           ${(price / 100).toFixed(2)}
         </Typography>
         <Typography variant="body2" color="text.secondary">

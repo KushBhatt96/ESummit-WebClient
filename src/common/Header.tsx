@@ -32,7 +32,7 @@ function Header({ darkMode, handleThemeChanged }: Props) {
   const activeLinkStyling = {
     color: "inherit",
     textDecoration: "none",
-    typography: "h6",
+    typography: "body1",
     "&:hover": { color: "secondary.main" },
     "&.active": { color: "secondary.main" },
   };
@@ -47,13 +47,8 @@ function Header({ darkMode, handleThemeChanged }: Props) {
         }}
       >
         <Box display="flex" alignItems="center">
-          <Typography
-            variant="h6"
-            component={NavLink}
-            to="/"
-            sx={activeLinkStyling}
-          >
-            E-SUMMIT SHOPPING
+          <Typography component={NavLink} to="/" sx={activeLinkStyling}>
+            E-Summit
           </Typography>
           <Switch checked={darkMode} onClick={handleThemeChanged} />
         </Box>
@@ -66,7 +61,7 @@ function Header({ darkMode, handleThemeChanged }: Props) {
                 to={path}
                 sx={activeLinkStyling}
               >
-                {title.toUpperCase()}
+                {title.charAt(0).toUpperCase() + title.slice(1)}
               </ListItem>
             ))}
           </List>
@@ -85,7 +80,7 @@ function Header({ darkMode, handleThemeChanged }: Props) {
                 to={path}
                 sx={activeLinkStyling}
               >
-                {title.toUpperCase()}
+                {title.charAt(0).toUpperCase() + title.slice(1)}
               </ListItem>
             ))}
           </List>
