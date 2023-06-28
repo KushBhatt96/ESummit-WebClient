@@ -12,6 +12,7 @@ import ProductDetail from "../features/catalog/ProductDetail";
 import AboutPage from "../features/about/AboutPage";
 import ContactPage from "../features/contact/ContactPage";
 import ServerError from "../common/errors/ServerError";
+import Cart from "../features/cart/Cart";
 
 export function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -23,6 +24,9 @@ export function App() {
   const paletteType = darkMode ? "dark" : "light";
 
   const theme = createTheme({
+    typography: {
+      fontFamily: "roboto",
+    },
     palette: {
       mode: paletteType,
       background: {
@@ -37,6 +41,7 @@ export function App() {
         light: "#b4deec",
         main: "#51a4ca",
         dark: "#236793",
+        contrastText: "white",
       },
     },
   });
@@ -54,6 +59,7 @@ export function App() {
         </Route>
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/server-error" element={<ServerError />} />
         <Route path="/not-found" element={<NotFound />} />
         <Route path="*" element={<Navigate replace to="/not-found" />} />

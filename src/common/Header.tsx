@@ -10,7 +10,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const midLinks = [
   { id: 1, title: "catalog", path: "/catalog" },
@@ -46,7 +46,12 @@ function Header({ darkMode, handleThemeChanged }: Props) {
           alignItems: "center",
         }}
       >
-        <Box display="flex" alignItems="center">
+        <Box
+          display="flex"
+          width={150}
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography component={NavLink} to="/" sx={activeLinkStyling}>
             E-Summit
           </Typography>
@@ -67,7 +72,14 @@ function Header({ darkMode, handleThemeChanged }: Props) {
           </List>
         </Box>
         <Box display="flex" alignItems="center">
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
+          <IconButton
+            component={Link}
+            to="/cart"
+            size="large"
+            edge="start"
+            color="inherit"
+            sx={{ mr: 2 }}
+          >
             <Badge badgeContent="4" color="secondary">
               <ShoppingCart />
             </Badge>
