@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Home from "../features/home/Home";
-import NotFound from "../features/notFound/NotFound";
+import NotFound from "../common/errors/NotFound";
 import Catalog from "../features/catalog/Catalog";
 import Header from "../common/Header";
 import ProductDetail from "../features/catalog/ProductDetail";

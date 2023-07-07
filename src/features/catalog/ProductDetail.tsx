@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Product } from "../../models/Product";
 import agent from "../../api/agent";
-import NotFound from "../notFound/NotFound";
+import NotFound from "../../common/errors/NotFound";
 import Loading, { LoadingSizes } from "../../common/Loading";
 
 function ProductDetail() {

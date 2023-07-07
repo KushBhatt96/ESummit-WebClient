@@ -17,13 +17,11 @@ axios.interceptors.response.use(
         // in the case of validation errors, we are expecting a list of all failed validation checks
         if (data.errors) {
           const modelStateErrors: string[] = [];
-          // eslint-disable-next-line no-restricted-syntax
           for (const key in data.errors) {
             if (data.errors[key]) {
               modelStateErrors.push(data.errors[key]);
             }
           }
-          // eslint-disable-next-line @typescript-eslint/no-throw-literal
           throw modelStateErrors.flat();
         }
         toast.error(data.title);

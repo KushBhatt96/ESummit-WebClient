@@ -5,41 +5,38 @@ import { Product } from "../../models/Product";
 import ProductList from "./ProductList";
 import agent from "../../api/agent";
 import Loading, { LoadingSizes } from "../../common/Loading";
+import { useAppDispatch, useAppSelector } from "../../app/Hooks";
+import { fetchProducts, selectProducts } from "./ProductSlice";
 
 function Catalog() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
+  const productsStatus = useAppSelector((state) => state.product.status);
 
   useEffect(() => {
-    async function getProducts() {
-      try {
-        const data = await agent.Catalog.list();
-        setProducts(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+    if (productsStatus === "idle") {
+      dispatch(fetchProducts());
     }
+  }, [productsStatus, dispatch]);
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [loading, setLoading] = useState(true);
 
-    getProducts();
-  }, []);
+  // useEffect(() => {
+  //   async function getProducts() {
+  //     try {
+  //       const data = await agent.Catalog.list();
+  //       setProducts(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
 
-  const handleAddProduct = () => {
-    setProducts((prevState) => [
-      ...prevState,
-      {
-        id: prevState.length + 1,
-        name: `name${prevState.length + 1}`,
-        description: `desc${prevState.length + 1}`,
-        price: prevState.length + 100,
-        pictureUrl: "http://picsum.photos/200",
-        brand: `brand${prevState.length + 1}`,
-      },
-    ]);
-  };
+  //   getProducts();
+  // }, []);
 
-  if (loading)
+  if (productsStatus == "loading")
     return (
       <Loading
         message="Loading product catalog..."

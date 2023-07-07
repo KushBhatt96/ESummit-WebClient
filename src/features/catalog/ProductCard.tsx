@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardActions,
@@ -8,7 +7,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+
+import { useAppDispatch } from "../../app/Hooks";
 import { Product } from "../../models/Product";
+import { addToCart } from "../cart/CartSlice";
 
 interface Props {
   product: Product;
@@ -16,6 +18,12 @@ interface Props {
 
 function ProductCard({ product }: Props) {
   const { id, name, pictureUrl, type, price } = product;
+
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+  };
 
   return (
     <Card sx={{ boxShadow: 4 }}>
@@ -44,7 +52,9 @@ function ProductCard({ product }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Add to cart</Button>
+        <Button onClick={handleAddToCart} size="small">
+          Add to cart
+        </Button>
         <Link to={`/catalog/${id}`}>
           <Button size="small">View</Button>
         </Link>
