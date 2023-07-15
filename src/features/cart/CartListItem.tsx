@@ -7,64 +7,31 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, FormEvent, useState, KeyboardEvent } from "react";
 
-import { useAppDispatch } from "../../app/Hooks";
-import { Product } from "../../models/Product";
-import { removeFromCart } from "./CartSlice";
+import { useAppDispatch } from "../../app/hooks";
+import { removeFromCart, updateQuantity } from "./CartSlice";
+import { CartItem } from "../../models/CartItem";
 
 interface Props {
-  cartItem: Product;
+  cartItem: CartItem;
 }
 
 function CartListItem({ cartItem }: Props) {
   const dispatch = useAppDispatch();
 
-  const [quantity, setQuantity] = useState(1);
-  const [color, setColor] = useState("");
-  const [name, SetName] = useState("");
+  const { id, product, quantity, totalPrice } = cartItem;
 
   const handleRemoveFromCart = () => {
-    dispatch(removeFromCart(cartItem.id));
+    dispatch(removeFromCart(id));
   };
 
   const handleQuantityChanged = (event: SelectChangeEvent<number>) => {
-    setQuantity(event.target.value as number);
-  };
-
-  const handleColorChanged = (event: ChangeEvent<HTMLSelectElement>) => {
-    setColor(event.target.value);
-  };
-
-  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    alert("Submitting!");
-  };
-
-  const handleNameEntered = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      alert(`Wassai ${name}`);
-    }
+    const quantity = event.target.value as number;
+    dispatch(updateQuantity({ id, quantity }));
   };
 
   return (
     <Paper elevation={5}>
-      <form onSubmit={handleFormSubmit}>
-        <select name="colors" id="color-select" onChange={handleColorChanged}>
-          <option value="red">red</option>
-          <option value="blue">blue</option>
-          <option value="green">green</option>
-        </select>
-        <button>Click here!</button>
-      </form>
-      <p>Tell me your name! Press enter once done typing!</p>
-      <div>{name}</div>
-      <input
-        type="text"
-        onChange={(event) => SetName(event.target.value)}
-        onKeyDown={handleNameEntered}
-      ></input>
-      <div>{color}</div>
       <Grid container>
         <Grid
           item
@@ -78,20 +45,20 @@ function CartListItem({ cartItem }: Props) {
           }}
         >
           <img
-            src={cartItem.pictureUrl}
+            src={product.pictureUrl}
             style={{ height: "80%", width: "80%" }}
           />
         </Grid>
         <Grid item sm={9}>
           <Grid container padding={2} rowSpacing={1} columnSpacing={1}>
             <Grid item xs={12}>
-              <Typography variant="h6">{cartItem.name}</Typography>
+              <Typography variant="h6">{product.name}</Typography>
             </Grid>
             <Grid item xs={6} display="flex" justifyContent="flex-start">
               <Typography variant="body1" fontWeight="bold" marginRight={1}>
                 {"Brand:"}
               </Typography>
-              <Typography variant="body1">{cartItem.brand}</Typography>
+              <Typography variant="body1">{product.brand}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1" fontWeight="bold">
@@ -112,11 +79,11 @@ function CartListItem({ cartItem }: Props) {
               <Typography variant="body1" fontWeight="bold" marginRight={1}>
                 {"Type:"}
               </Typography>
-              <Typography variant="body1">{cartItem.type}</Typography>
+              <Typography variant="body1">{product.type}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1">
-                {`$${(cartItem.price / 100).toFixed(2)}`}
+                {`$${(product.price / 100).toFixed(2)}`}
               </Typography>
             </Grid>
             <Grid item xs={2}>
@@ -135,7 +102,7 @@ function CartListItem({ cartItem }: Props) {
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1">
-                {`$${((cartItem.price * quantity) / 100).toFixed(2)}`}
+                {`$${totalPrice.toFixed(2)}`}
               </Typography>
             </Grid>
             <Grid item xs={8}>
@@ -148,12 +115,14 @@ function CartListItem({ cartItem }: Props) {
               justifyContent="space-between"
               marginTop={5}
             >
-              <Button variant="outlined">Edit</Button>
               <Button
-                onClick={handleRemoveFromCart}
-                variant="outlined"
-                color="error"
+                sx={{
+                  color: "action.active",
+                }}
               >
+                Edit
+              </Button>
+              <Button onClick={handleRemoveFromCart} color="error">
                 Remove
               </Button>
             </Grid>

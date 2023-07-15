@@ -5,7 +5,7 @@ import { Product } from "../../models/Product";
 import ProductList from "./ProductList";
 import agent from "../../api/agent";
 import Loading, { LoadingSizes } from "../../common/Loading";
-import { useAppDispatch, useAppSelector } from "../../app/Hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchProducts, selectProducts } from "./ProductSlice";
 
 function Catalog() {

@@ -1,6 +1,6 @@
 import { Container, Grid, Typography } from "@mui/material";
 
-import { useAppSelector } from "../../app/Hooks";
+import { useAppSelector } from "../../app/hooks";
 import OrderSummary from "./OrderSummary";
 import CartList from "./CartList";
 import { selectCartItems } from "./CartSlice";

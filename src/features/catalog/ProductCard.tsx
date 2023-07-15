@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import { useAppDispatch } from "../../app/Hooks";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Product } from "../../models/Product";
-import { addToCart } from "../cart/CartSlice";
+import { addToCart, selectCartItem } from "../cart/CartSlice";
 
 interface Props {
   product: Product;
@@ -18,11 +18,15 @@ interface Props {
 
 function ProductCard({ product }: Props) {
   const { id, name, pictureUrl, type, price } = product;
-
+  const associatedCartItem = useAppSelector((state) =>
+    selectCartItem(state, id)
+  );
   const dispatch = useAppDispatch();
 
   const handleAddToCart = () => {
-    dispatch(addToCart(product));
+    if (!associatedCartItem || associatedCartItem.quantity < 5) {
+      dispatch(addToCart(product));
+    }
   };
 
   return (
@@ -41,7 +45,7 @@ function ProductCard({ product }: Props) {
         <img src={pictureUrl} style={{ width: "80%", height: "80%" }} />
       </CardMedia>
       <CardContent>
-        <Typography gutterBottom color="primary" fontWeight="bold">
+        <Typography gutterBottom fontWeight="bold">
           {name}
         </Typography>
         <Typography gutterBottom color="secondary" variant="h6">
@@ -52,11 +56,20 @@ function ProductCard({ product }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button onClick={handleAddToCart} size="small">
+        <Button
+          sx={{
+            color: "action.active",
+            marginRight: 1,
+          }}
+          onClick={handleAddToCart}
+          size="small"
+        >
           Add to cart
         </Button>
         <Link to={`/catalog/${id}`}>
-          <Button size="small">View</Button>
+          <Button sx={{ color: "action.active" }} size="small">
+            View
+          </Button>
         </Link>
       </CardActions>
     </Card>

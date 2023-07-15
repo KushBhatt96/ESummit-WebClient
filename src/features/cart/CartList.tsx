@@ -1,21 +1,27 @@
-import { Divider, List, ListItem } from "@mui/material";
-import { Product } from "../../models/Product";
-import CartListItem from "./CartListItem";
 import React from "react";
+import { Divider, List, ListItem } from "@mui/material";
+
+import CartListItem from "./CartListItem";
+import { CartItem } from "../../models/CartItem";
 
 interface Props {
-  cartItems: Product[];
+  cartItems: CartItem[];
 }
+
+const CartItemStyle = {
+  padding: 0,
+  marginY: 2,
+};
 
 function CartList({ cartItems }: Props) {
   return (
     <List disablePadding>
-      {cartItems.map((cartItem) => (
+      {cartItems.map((cartItem, index) => (
         <React.Fragment key={cartItem.id}>
-          <ListItem sx={{ padding: 0, marginY: 2 }}>
+          <ListItem sx={CartItemStyle}>
             <CartListItem cartItem={cartItem} />
           </ListItem>
-          <Divider />
+          {index != cartItems.length - 1 && <Divider />}
         </React.Fragment>
       ))}
     </List>

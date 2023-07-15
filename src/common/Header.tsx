@@ -1,4 +1,4 @@
-import { ShoppingCart } from "@mui/icons-material";
+import { ShoppingCart, LightMode, DarkMode } from "@mui/icons-material";
 import {
   AppBar,
   Badge,
@@ -6,10 +6,10 @@ import {
   IconButton,
   List,
   ListItem,
-  Switch,
   Toolbar,
   Typography,
 } from "@mui/material";
+
 import { Link, NavLink } from "react-router-dom";
 
 const midLinks = [
@@ -24,11 +24,11 @@ const rightLinks = [
 ];
 
 interface Props {
-  darkMode: boolean;
+  isDarkMode: boolean;
   handleThemeChanged: () => void;
 }
 
-function Header({ darkMode, handleThemeChanged }: Props) {
+function Header({ isDarkMode, handleThemeChanged }: Props) {
   const activeLinkStyling = {
     color: "inherit",
     textDecoration: "none",
@@ -55,7 +55,9 @@ function Header({ darkMode, handleThemeChanged }: Props) {
           <Typography component={NavLink} to="/" sx={activeLinkStyling}>
             E-Summit
           </Typography>
-          <Switch checked={darkMode} onClick={handleThemeChanged} />
+          <IconButton onClick={handleThemeChanged}>
+            {isDarkMode ? <DarkMode /> : <LightMode color="warning" />}
+          </IconButton>
         </Box>
         <Box>
           <List sx={{ display: "flex" }}>

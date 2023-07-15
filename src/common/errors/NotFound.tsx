@@ -8,7 +8,7 @@ function NotFound() {
         Oops - Not Found!
       </Typography>
       <Divider />
-      <Button fullWidth component={Link} to="/catalog">
+      <Button color="secondary" fullWidth component={Link} to="/catalog">
         Return to catalog
       </Button>
     </Container>
