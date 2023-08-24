@@ -32,7 +32,7 @@ function App() {
         main: grey["900"],
       },
       secondary: {
-        main: blue["300"],
+        main: green["300"],
       },
       error: {
         main: red["A400"],

@@ -8,16 +8,16 @@ interface Props {
   cartItems: CartItem[];
 }
 
-const CartItemStyle = {
-  padding: 0,
-  marginY: 2,
-};
-
 function CartList({ cartItems }: Props) {
+  const CartItemStyle = {
+    padding: 0,
+    marginY: 2,
+  };
+
   return (
     <List disablePadding>
       {cartItems.map((cartItem, index) => (
-        <React.Fragment key={cartItem.id}>
+        <React.Fragment key={cartItem.cartItemId}>
           <ListItem sx={CartItemStyle}>
             <CartListItem cartItem={cartItem} />
           </ListItem>

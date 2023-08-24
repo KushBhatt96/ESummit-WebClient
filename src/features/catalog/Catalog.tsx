@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Container } from "@mui/material";
 
-import { Product } from "../../models/Product";
 import ProductList from "./ProductList";
-import agent from "../../api/agent";
 import Loading, { LoadingSizes } from "../../common/Loading";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchProducts, selectProducts } from "./ProductSlice";
@@ -17,24 +15,7 @@ function Catalog() {
     if (productsStatus === "idle") {
       dispatch(fetchProducts());
     }
-  }, [productsStatus, dispatch]);
-  // const [products, setProducts] = useState<Product[]>([]);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   async function getProducts() {
-  //     try {
-  //       const data = await agent.Catalog.list();
-  //       setProducts(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-
-  //   getProducts();
-  // }, []);
+  }, [productsStatus, dispatch]); // TODO: determine why we must add dispatch to the useEffect dependency array
 
   if (productsStatus == "loading")
     return (

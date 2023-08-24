@@ -1,12 +1,28 @@
 import { Container, Grid, Typography } from "@mui/material";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import OrderSummary from "./OrderSummary";
 import CartList from "./CartList";
-import { selectCartItems } from "./CartSlice";
+import { getCart, selectCartItems } from "./CartSlice";
+import { useEffect } from "react";
+import Loading, { LoadingSizes } from "../../common/Loading";
 
 function Cart() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCart());
+  }, []);
+
   const cartItems = useAppSelector(selectCartItems);
+  if (!cartItems) {
+    return (
+      <Loading
+        message="Loading product catalog..."
+        size={LoadingSizes.MEDIUM}
+      />
+    );
+  }
 
   return (
     <Container>

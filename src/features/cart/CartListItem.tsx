@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { useAppDispatch } from "../../app/hooks";
-import { removeFromCart, updateQuantity } from "./CartSlice";
+import { removeCartItem, updateCartItemQuantity } from "./CartSlice";
 import { CartItem } from "../../models/CartItem";
 
 interface Props {
@@ -19,15 +19,15 @@ interface Props {
 function CartListItem({ cartItem }: Props) {
   const dispatch = useAppDispatch();
 
-  const { id, product, quantity, totalPrice } = cartItem;
+  const { cartItemId, product, quantity, totalPrice } = cartItem;
 
   const handleRemoveFromCart = () => {
-    dispatch(removeFromCart(id));
+    dispatch(removeCartItem(cartItemId));
   };
 
   const handleQuantityChanged = (event: SelectChangeEvent<number>) => {
     const quantity = event.target.value as number;
-    dispatch(updateQuantity({ id, quantity }));
+    dispatch(updateCartItemQuantity({ cartItemId, quantity }));
   };
 
   return (
@@ -102,7 +102,8 @@ function CartListItem({ cartItem }: Props) {
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1">
-                {`$${totalPrice.toFixed(2)}`}
+                {/* {`$${totalPrice.toFixed(2)}`} */}
+                Some Price
               </Typography>
             </Grid>
             <Grid item xs={8}>

@@ -17,15 +17,16 @@ interface Props {
 }
 
 function ProductCard({ product }: Props) {
-  const { id, name, pictureUrl, type, price } = product;
+  const { productId, name, pictureUrl, type, price } = product;
   const associatedCartItem = useAppSelector((state) =>
-    selectCartItem(state, id)
+    selectCartItem(state, productId)
   );
   const dispatch = useAppDispatch();
 
+  // TODO: Possibly make max quanity come from backend
   const handleAddToCart = () => {
     if (!associatedCartItem || associatedCartItem.quantity < 5) {
-      dispatch(addToCart(product));
+      dispatch(addToCart(productId));
     }
   };
 
@@ -66,7 +67,7 @@ function ProductCard({ product }: Props) {
         >
           Add to cart
         </Button>
-        <Link to={`/catalog/${id}`}>
+        <Link to={`/catalog/${productId}`}>
           <Button sx={{ color: "action.active" }} size="small">
             View
           </Button>

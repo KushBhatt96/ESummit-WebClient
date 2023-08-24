@@ -13,14 +13,14 @@ import {
 import { Link, NavLink } from "react-router-dom";
 
 const midLinks = [
-  { id: 1, title: "catalog", path: "/catalog" },
-  { id: 2, title: "about", path: "/about" },
-  { id: 3, title: "contact", path: "/contact" },
+  { id: 1, title: "CATALOG", path: "/catalog" },
+  { id: 2, title: "ABOUT", path: "/about" },
+  { id: 3, title: "CONTACT", path: "/contact" },
 ];
 
 const rightLinks = [
-  { id: 1, title: "login", path: "/login" },
-  { id: 2, title: "register", path: "/register" },
+  { id: 1, title: "SIGN IN", path: "/login" },
+  { id: 2, title: "REGISTER", path: "/register" },
 ];
 
 interface Props {
@@ -38,7 +38,7 @@ function Header({ isDarkMode, handleThemeChanged }: Props) {
   };
 
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
+    <AppBar position="sticky" sx={{ mb: 4 }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -53,7 +53,7 @@ function Header({ isDarkMode, handleThemeChanged }: Props) {
           alignItems="center"
         >
           <Typography component={NavLink} to="/" sx={activeLinkStyling}>
-            E-Summit
+            E-SUMMIT
           </Typography>
           <IconButton onClick={handleThemeChanged}>
             {isDarkMode ? <DarkMode /> : <LightMode color="warning" />}
