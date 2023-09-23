@@ -4,6 +4,8 @@ import { CartItem } from "../../models/CartItem";
 import axios from "axios";
 import { Cart } from "../../models/Cart";
 
+const baseUrl = "http://localhost:5119";
+
 interface CartState {
   cartItems: CartItem[];
   status: string;
@@ -16,17 +18,16 @@ const initialState: CartState = {
   error: "",
 };
 
+// action/thunk TYPE naming convention "feature/eventName"
 export const getCart = createAsyncThunk("cart/getCart", async () => {
-  const response = await axios.get("http://localhost:5119/api/cart");
+  const response = await axios.get(`${baseUrl}/api/cart`);
   return response.data;
 });
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (productId: number) => {
-    const response = await axios.post(
-      `http://localhost:5119/api/cartItems/${productId}`
-    );
+    const response = await axios.post(`${baseUrl}/api/cartItems/${productId}`);
     return response.data;
   }
 );
@@ -34,7 +35,7 @@ export const addToCart = createAsyncThunk(
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
   async (cartItemId: number) => {
-    await axios.delete(`http://localhost:5119/api/cartItems/${cartItemId}`);
+    await axios.delete(`${baseUrl}/api/cartItems/${cartItemId}`);
     return cartItemId;
   }
 );
@@ -51,10 +52,7 @@ export const updateCartItemQuantity = createAsyncThunk(
     const params = {
       quantity,
     };
-    await axios.put(
-      `http://localhost:5119/api/cartItems/${cartItemId}`,
-      params
-    );
+    await axios.put(`${baseUrl}/api/cartItems/${cartItemId}`, params);
     return {
       cartItemId,
       quantity,
@@ -149,5 +147,7 @@ const cartSlice = createSlice({
 export const selectCartItems = (state: RootState) => state.cart.cartItems;
 export const selectCartItem = (state: RootState, id: number) =>
   state.cart.cartItems.find((item) => item.product.productId === id);
+export const selectCartQuatity = (state: RootState) =>
+  state.cart.cartItems.length;
 
 export default cartSlice.reducer;

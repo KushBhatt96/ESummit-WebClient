@@ -1,6 +1,7 @@
-import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 
 import Carousel from "../../common/Carousel";
+import Slider from "../../common/Slider";
 import { useState } from "react";
 
 interface Slide {
@@ -9,7 +10,7 @@ interface Slide {
   pictureUrl: string;
 }
 
-const slides = [
+const slides: Slide[] = [
   {
     id: 1,
     title: "slide 1",
@@ -38,41 +39,44 @@ function Home() {
     {
       id: 0,
       title: "slide 0",
-      pictureUrl: "/images/products/boot-core2.png",
+      pictureUrl: "/images/products/boot-ang1.png",
     },
     {
       id: 1,
       title: "slide 1",
-      pictureUrl: "/images/tv.JPG",
+      pictureUrl: "/images/products/boot-redis1.png",
     },
     {
       id: 2,
       title: "slide 2",
-      pictureUrl: "/images/laptop.JPG",
+      pictureUrl: "/images/products/glove-code1.png",
     },
     {
       id: 3,
-      title: "slide 3",
-      pictureUrl: "/images/gaming.JPG",
+      title: "slide 0",
+      pictureUrl: "/images/products/boot-ang1.png",
+    },
+    {
+      id: 4,
+      title: "slide 1",
+      pictureUrl: "/images/products/boot-redis1.png",
     },
     {
       id: 5,
-      title: "slide 5",
-      pictureUrl: "/images/products/hat-core1.png",
+      title: "slide 0",
+      pictureUrl: "/images/products/boot-ang1.png",
+    },
+    {
+      id: 6,
+      title: "slide 1",
+      pictureUrl: "/images/products/boot-redis1.png",
+    },
+    {
+      id: 7,
+      title: "slide 1",
+      pictureUrl: "/images/products/boot-redis1.png",
     },
   ]);
-
-  const [translation, setTranslation] = useState(0);
-
-  const slideBoxStyles = (heightPercentage: number) => ({
-    width: "18%",
-    height: `${heightPercentage}vh`,
-    margin: "0 1vh",
-    boxShadow:
-      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-    transform: `translate(${translation}vh)`,
-    transitionDuration: "0.75s",
-  });
 
   const getBoxStyles = (heightPercentage: number) => ({
     width: "100%",
@@ -82,14 +86,6 @@ function Home() {
     boxShadow:
       "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
   });
-
-  const handleScrollRight = () => {
-    setTranslation((prevState) => prevState + 22);
-  };
-
-  const handleScrollLeft = () => {
-    setTranslation((prevState) => prevState - 22);
-  };
 
   return (
     <Container>
@@ -106,42 +102,12 @@ function Home() {
         >
           <Typography variant="h2">Popular Categories</Typography>
         </Grid>
-        <Grid item xs={12} display="flex" position="relative" overflow="hidden">
-          <Box
-            position="absolute"
-            height="100%"
-            width="25%"
-            left="0px"
-            zIndex={1}
-            sx={{ background: "#E9E9E9" }}
-            display="flex"
-            justifyContent="center"
-            alignContent="center"
-          >
-            <Button onClick={handleScrollLeft}>Left</Button>
-          </Box>
-          <Box display="flex">
-            {pictures.map((picture) => (
-              <img
-                key={picture.id}
-                style={slideBoxStyles(20)}
-                src={`${picture.pictureUrl}`}
-              />
-            ))}
-          </Box>
-          <Box
-            position="absolute"
-            height="100%"
-            width="25%"
-            right="0px"
-            zIndex={1}
-            sx={{ background: "#E9E9E9" }}
-            display="flex"
-            justifyContent="center"
-            alignContent="center"
-          >
-            <Button onClick={handleScrollRight}>Right</Button>
-          </Box>
+        <Grid item xs={12}>
+          <Slider
+            slides={pictures}
+            numVisibleDesiredOnLarge={4}
+            numVisibleDesiredOnSmall={2}
+          />
         </Grid>
         <Grid
           item

@@ -25,10 +25,11 @@ const rightLinks = [
 
 interface Props {
   isDarkMode: boolean;
-  handleThemeChanged: () => void;
+  onThemeChanged: () => void;
+  cartQuantity: number;
 }
 
-function Header({ isDarkMode, handleThemeChanged }: Props) {
+function Header({ isDarkMode, onThemeChanged, cartQuantity }: Props) {
   const activeLinkStyling = {
     color: "inherit",
     textDecoration: "none",
@@ -55,7 +56,7 @@ function Header({ isDarkMode, handleThemeChanged }: Props) {
           <Typography component={NavLink} to="/" sx={activeLinkStyling}>
             E-SUMMIT
           </Typography>
-          <IconButton onClick={handleThemeChanged}>
+          <IconButton onClick={onThemeChanged}>
             {isDarkMode ? <DarkMode /> : <LightMode color="warning" />}
           </IconButton>
         </Box>
@@ -82,7 +83,7 @@ function Header({ isDarkMode, handleThemeChanged }: Props) {
             color="inherit"
             sx={{ mr: 2 }}
           >
-            <Badge badgeContent="4" color="secondary">
+            <Badge badgeContent={cartQuantity} color="secondary">
               <ShoppingCart />
             </Badge>
           </IconButton>

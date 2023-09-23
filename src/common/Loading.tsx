@@ -31,7 +31,7 @@ function Loading({ message = "", size = LoadingSizes.MEDIUM }: Props) {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        height="100%"
       >
         <CircularProgress color="secondary" size={spinnerSizeMapping[size]} />
         <Typography
