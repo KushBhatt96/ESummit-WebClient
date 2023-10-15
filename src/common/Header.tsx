@@ -11,32 +11,42 @@ import {
 } from "@mui/material";
 
 import { Link, NavLink } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectIsLoggedIn } from "../features/auth/AuthSlice";
 
 const midLinks = [
-  { id: 1, title: "CATALOG", path: "/catalog" },
-  { id: 2, title: "ABOUT", path: "/about" },
-  { id: 3, title: "CONTACT", path: "/contact" },
+  { id: 1, title: "Catalog", path: "/catalog" },
+  { id: 2, title: "About", path: "/about" },
+  { id: 3, title: "Contact", path: "/contact" },
 ];
 
 const rightLinks = [
-  { id: 1, title: "SIGN IN", path: "/login" },
-  { id: 2, title: "REGISTER", path: "/register" },
+  { id: 1, title: "Login", path: "/login" },
+  { id: 2, title: "Register", path: "/register" },
 ];
 
 interface Props {
   isDarkMode: boolean;
   onThemeChanged: () => void;
   cartQuantity: number;
+  onHandleLogout: () => void;
 }
 
-function Header({ isDarkMode, onThemeChanged, cartQuantity }: Props) {
+function Header({
+  isDarkMode,
+  onThemeChanged,
+  cartQuantity,
+  onHandleLogout,
+}: Props) {
   const activeLinkStyling = {
     color: "inherit",
     textDecoration: "none",
     typography: "body1",
-    "&:hover": { color: "secondary.main" },
+    "&:hover": { color: "secondary.main", cursor: "pointer" },
     "&.active": { color: "secondary.main" },
   };
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   return (
     <AppBar position="sticky" sx={{ mb: 4 }}>
@@ -54,7 +64,7 @@ function Header({ isDarkMode, onThemeChanged, cartQuantity }: Props) {
           alignItems="center"
         >
           <Typography component={NavLink} to="/" sx={activeLinkStyling}>
-            E-SUMMIT
+            E-Summit
           </Typography>
           <IconButton onClick={onThemeChanged}>
             {isDarkMode ? <DarkMode /> : <LightMode color="warning" />}
@@ -88,16 +98,31 @@ function Header({ isDarkMode, onThemeChanged, cartQuantity }: Props) {
             </Badge>
           </IconButton>
           <List sx={{ display: "flex", justifyContent: "flex-end" }}>
-            {rightLinks.map(({ id, title, path }) => (
-              <ListItem
-                key={id}
-                component={NavLink}
-                to={path}
-                sx={activeLinkStyling}
-              >
-                {title.charAt(0).toUpperCase() + title.slice(1)}
-              </ListItem>
-            ))}
+            {isLoggedIn ? (
+              <>
+                <ListItem
+                  component={NavLink}
+                  to="/Profile"
+                  sx={activeLinkStyling}
+                >
+                  Profile
+                </ListItem>
+                <ListItem sx={activeLinkStyling} onClick={onHandleLogout}>
+                  Logout
+                </ListItem>
+              </>
+            ) : (
+              rightLinks.map(({ id, title, path }) => (
+                <ListItem
+                  key={id}
+                  component={NavLink}
+                  to={path}
+                  sx={activeLinkStyling}
+                >
+                  {title.charAt(0).toUpperCase() + title.slice(1)}
+                </ListItem>
+              ))
+            )}
           </List>
         </Box>
       </Toolbar>

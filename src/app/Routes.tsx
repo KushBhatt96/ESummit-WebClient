@@ -8,6 +8,9 @@ import ContactPage from "../features/contact/ContactPage";
 import ServerError from "../common/errors/ServerError";
 import NotFound from "../common/errors/NotFound";
 import Cart from "../features/cart/Cart";
+import Register from "../features/auth/Register";
+import Login from "../features/auth/Login";
+import Profile from "../features/profile/Profile";
 
 function AppRoutes() {
   return (
@@ -20,6 +23,9 @@ function AppRoutes() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/server-error" element={<ServerError />} />
       <Route path="/not-found" element={<NotFound />} />
       <Route path="*" element={<Navigate replace to="/not-found" />} />

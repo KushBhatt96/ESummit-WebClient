@@ -16,6 +16,10 @@ interface Props {
   numVisibleDesiredOnSmall: number;
 }
 
+// TODO: simply math for calculating sizes and transition
+// TODO: enforce limits on the props as they make sense
+// TODO: Fix the buttons at the bottom of the slider indicating position
+// TODO: When hiddenSlides == 0, conditionally render without the arrows
 function Slider({
   slides,
   numVisibleDesiredOnLarge,
@@ -58,9 +62,9 @@ function Slider({
 
   const leftArrowStyles = {
     top: "50%",
-    position: "relative",
-    transform: "translate(0, -50%)",
-    fontSize: "45px",
+    position: "absolute",
+    transform: "translate(50%, -50%)",
+    fontSize: "50px",
     color: "primary.main",
     zIndex: 1,
     cursor: "pointer",
@@ -69,9 +73,9 @@ function Slider({
 
   const rightArrowStyles = {
     top: "50%",
-    position: "relative",
-    transform: "translate(0, -50%)",
-    fontSize: "45px",
+    position: "absolute",
+    transform: "translate(-150%, -50%)",
+    fontSize: "50px",
     color: "primary.main",
     zIndex: 1,
     cursor: "pointer",

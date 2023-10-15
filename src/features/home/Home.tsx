@@ -1,8 +1,9 @@
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Alert, Box, Container, Grid, Typography } from "@mui/material";
 
 import Carousel from "../../common/Carousel";
 import Slider from "../../common/Slider";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 interface Slide {
   id: number;
@@ -14,69 +15,62 @@ const slides: Slide[] = [
   {
     id: 1,
     title: "slide 1",
-    pictureUrl: "/images/tv.JPG",
+    pictureUrl: "/images/jeans.jpg",
   },
   {
     id: 2,
     title: "slide 2",
-    pictureUrl: "/images/laptop.JPG",
+    pictureUrl: "/images/shirts.jpg",
   },
   {
     id: 3,
     title: "slide 3",
-    pictureUrl: "/images/gaming.JPG",
+    pictureUrl: "/images/shoes.jpg",
   },
 ];
 
 const containerStyles = {
   width: "100%",
-  height: "40vh",
+  height: "50vh",
   margin: "0 auto",
 };
 
 function Home() {
+  // Can add as many slides as required - ideally 10 max
   const [pictures, setPictures] = useState([
-    {
-      id: 0,
-      title: "slide 0",
-      pictureUrl: "/images/products/boot-ang1.png",
-    },
     {
       id: 1,
       title: "slide 1",
-      pictureUrl: "/images/products/boot-redis1.png",
+      pictureUrl: "/images/bluegreen_shoes.png",
     },
     {
       id: 2,
       title: "slide 2",
-      pictureUrl: "/images/products/glove-code1.png",
+      pictureUrl: "/images/beige_scarf.png",
     },
     {
       id: 3,
       title: "slide 0",
-      pictureUrl: "/images/products/boot-ang1.png",
+      pictureUrl: "/images/black_shirt.png",
     },
     {
       id: 4,
       title: "slide 1",
-      pictureUrl: "/images/products/boot-redis1.png",
+      pictureUrl: "/images/teal_shirt.png",
     },
     {
       id: 5,
       title: "slide 0",
-      pictureUrl: "/images/products/boot-ang1.png",
+      pictureUrl: "/images/white_jacket.png",
     },
     {
       id: 6,
       title: "slide 1",
-      pictureUrl: "/images/products/boot-redis1.png",
-    },
-    {
-      id: 7,
-      title: "slide 1",
-      pictureUrl: "/images/products/boot-redis1.png",
+      pictureUrl: "/images/pink_shoes.png",
     },
   ]);
+
+  const { state } = useLocation();
 
   const getBoxStyles = (heightPercentage: number) => ({
     width: "100%",
@@ -90,6 +84,11 @@ function Home() {
   return (
     <Container>
       <Grid container spacing={4}>
+        {state && state.isLoggedIn && (
+          <Grid item xs={12}>
+            <Alert severity="success">Login successful.</Alert>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Box sx={containerStyles}>
             <Carousel slides={slides} />
@@ -100,7 +99,7 @@ function Home() {
           xs={12}
           sx={{ display: "flex", justifyContent: "center", marginY: 6 }}
         >
-          <Typography variant="h2">Popular Categories</Typography>
+          <Typography variant="h3">Popular Items</Typography>
         </Grid>
         <Grid item xs={12}>
           <Slider
@@ -114,21 +113,29 @@ function Home() {
           xs={8}
           sx={{ display: "flex", justifyContent: "center", marginTop: 6 }}
         >
-          <Box sx={getBoxStyles(40)} />
+          <Box
+            sx={getBoxStyles(40)}
+            component="img"
+            src="/images/running_shoes.png"
+          />
         </Grid>
         <Grid
           item
           xs={4}
           sx={{ display: "flex", justifyContent: "center", marginTop: 6 }}
         >
-          <Box sx={getBoxStyles(40)} />
+          <Box
+            sx={getBoxStyles(40)}
+            component="img"
+            src="/images/winter_jacket2.png"
+          />
         </Grid>
         <Grid
           item
           xs={12}
           sx={{ display: "flex", justifyContent: "center", marginY: 6 }}
         >
-          <Box sx={getBoxStyles(20)} />
+          <Box sx={getBoxStyles(40)} component="img" src="/images/scarf.jpg" />
         </Grid>
       </Grid>
     </Container>

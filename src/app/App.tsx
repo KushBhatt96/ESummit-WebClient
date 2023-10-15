@@ -3,12 +3,15 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+import { blue, green, grey, red, yellow } from "@mui/material/colors";
 
 import Header from "../common/Header";
 import AppRoutes from "./Routes";
-import { blue, green, grey, red, yellow } from "@mui/material/colors";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { getCart, selectCartQuatity } from "../features/cart/CartSlice";
+import { selectCartQuatity } from "../features/cart/CartSlice";
+import { loadCartOffline, loadCart } from "../features/cart/CartSlice";
+import { logout } from "../features/auth/AuthSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -16,13 +19,24 @@ function App() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    dispatch(getCart());
-  }, []);
-
   const handleThemeChanged = () => {
     setIsDarkMode(!isDarkMode);
   };
+
+  const handleLogout = () => {
+    Cookies.remove("jwt");
+    dispatch(logout());
+    window.location.href = "/"; // causes a full refresh and navigates to desired location
+  };
+
+  useEffect(() => {
+    const jwt = Cookies.get("jwt");
+    if (jwt) {
+      dispatch(loadCart());
+    } else {
+      dispatch(loadCartOffline());
+    }
+  }, []);
 
   const paletteMode = isDarkMode ? "dark" : "light";
   const backgroundColorMode = isDarkMode ? "#263238" : "#E9E9E9";
@@ -66,6 +80,7 @@ function App() {
         isDarkMode={isDarkMode}
         onThemeChanged={handleThemeChanged}
         cartQuantity={cartQuantity}
+        onHandleLogout={handleLogout}
       />
       <AppRoutes />
     </ThemeProvider>

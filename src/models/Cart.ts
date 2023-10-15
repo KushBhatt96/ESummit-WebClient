@@ -5,6 +5,6 @@ export interface Cart {
   createdAt: string;
   lastUpdated: string;
   cartTotal: number;
-  customerId: number;
+  appUserId: number;
   cartItems: CartItem[];
 }

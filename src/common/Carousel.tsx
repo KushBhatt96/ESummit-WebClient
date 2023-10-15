@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -28,6 +28,7 @@ function Carousel({ slides }: Props) {
     backgroundImage: `url(${slides[currentIndex].pictureUrl})`,
     boxShadow:
       "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+    borderRadius: "5px",
   };
 
   const leftArrowStyles = {
@@ -35,8 +36,8 @@ function Carousel({ slides }: Props) {
     top: "50%",
     transform: "translate(0, -50%)",
     left: "32px",
-    fontSize: "45px",
-    color: "primary.main",
+    fontSize: "50px",
+    color: "white",
     zIndex: 1,
     cursor: "pointer",
     "&:hover": { color: "secondary.main" },
@@ -47,8 +48,8 @@ function Carousel({ slides }: Props) {
     top: "50%",
     transform: "translate(0, -50%)",
     right: "32px",
-    fontSize: "45px",
-    color: "primary.main",
+    fontSize: "50px",
+    color: "white",
     zIndex: 1,
     cursor: "pointer",
     "&:hover": { color: "secondary.main" },
@@ -73,7 +74,12 @@ function Carousel({ slides }: Props) {
       <Box onClick={goToNext}>
         <KeyboardArrowRight sx={rightArrowStyles} />
       </Box>
-      <Box sx={slideStyles} />
+      <Box
+        sx={slideStyles}
+        display="flex"
+        justifyContent="center"
+        alignItems="flex-end"
+      ></Box>
     </Box>
   );
 }

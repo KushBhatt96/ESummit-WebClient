@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Card,
   CardActions,
@@ -10,7 +11,15 @@ import { Link } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Product } from "../../models/Product";
-import { addToCart, selectCartItem } from "../cart/CartSlice";
+import {
+  addToCart,
+  addToCartOffline,
+  selectCartItem,
+  selectCartStatus,
+} from "../cart/CartSlice";
+import CartItemAddedDialog from "../../common/confirmationDialogs/CartItemAddedDialog";
+import { useState } from "react";
+import Cookies from "js-cookie";
 
 interface Props {
   product: Product;
@@ -21,59 +30,94 @@ function ProductCard({ product }: Props) {
   const associatedCartItem = useAppSelector((state) =>
     selectCartItem(state, productId)
   );
+  const cartStatus = useAppSelector(selectCartStatus);
   const dispatch = useAppDispatch();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   // TODO: Possibly make max quanity come from backend
   const handleAddToCart = () => {
     if (!associatedCartItem || associatedCartItem.quantity < 5) {
-      dispatch(addToCart(productId));
+      const jwt = Cookies.get("jwt");
+      if (jwt) {
+        dispatch(addToCart(productId));
+      } else {
+        dispatch(addToCartOffline(product));
+      }
+      handleDialogOpen();
+    } else {
+      setIsAlertOpen(true);
     }
   };
 
+  const handleDialogOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsOpen(false);
+  };
+
+  const MaxQuantityAlert = (
+    <Alert severity="error" color="error">
+      Maximum quantity reached for item.
+    </Alert>
+  );
+
   return (
-    <Card sx={{ boxShadow: 4 }}>
-      <CardMedia
-        sx={{
-          height: 300,
-          backgroundSize: "contain",
-          bgcolor: "primary.light",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        title={name}
-      >
-        <img src={pictureUrl} style={{ width: "80%", height: "80%" }} />
-      </CardMedia>
-      <CardContent>
-        <Typography gutterBottom fontWeight="bold">
-          {name}
-        </Typography>
-        <Typography gutterBottom color="secondary" variant="h6">
-          ${(price / 100).toFixed(2)}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {type}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button
+    <>
+      <CartItemAddedDialog
+        isOpen={isOpen}
+        handleClose={handleDialogClose}
+        product={product}
+      />
+      <Card sx={{ boxShadow: 4 }}>
+        <CardMedia
           sx={{
-            color: "action.active",
-            marginRight: 1,
+            height: 300,
+            backgroundSize: "contain",
+            bgcolor: "primary.light",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          onClick={handleAddToCart}
-          size="small"
+          title={name}
         >
-          Add to cart
-        </Button>
-        <Link to={`/catalog/${productId}`}>
-          <Button sx={{ color: "action.active" }} size="small">
-            View
+          <img src={pictureUrl} style={{ width: "80%", height: "80%" }} />
+        </CardMedia>
+        <CardContent>
+          <Typography gutterBottom fontWeight="bold">
+            {name}
+          </Typography>
+          <Typography gutterBottom color="secondary" variant="h6">
+            ${(price / 100).toFixed(2)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {type}
+          </Typography>
+          {isAlertOpen && MaxQuantityAlert}
+        </CardContent>
+        <CardActions>
+          <Button
+            sx={{
+              color: "action.active",
+              marginRight: 1,
+            }}
+            onClick={handleAddToCart}
+            size="small"
+            disabled={cartStatus == "loading" ? true : false}
+          >
+            Add to cart
           </Button>
-        </Link>
-      </CardActions>
-    </Card>
+          <Link to={`/catalog/${productId}`}>
+            <Button sx={{ color: "action.active" }} size="small">
+              View
+            </Button>
+          </Link>
+        </CardActions>
+      </Card>
+    </>
   );
 }
 

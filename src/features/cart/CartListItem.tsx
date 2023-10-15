@@ -7,9 +7,14 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-
+import Cookies from "js-cookie";
 import { useAppDispatch } from "../../app/hooks";
-import { removeCartItem, updateCartItemQuantity } from "./CartSlice";
+import {
+  removeCartItem,
+  updateCartItemQuantity,
+  removeCartItemOffline,
+  updateCartItemQuantityOffine,
+} from "./CartSlice";
 import { CartItem } from "../../models/CartItem";
 
 interface Props {
@@ -19,15 +24,25 @@ interface Props {
 function CartListItem({ cartItem }: Props) {
   const dispatch = useAppDispatch();
 
-  const { cartItemId, product, quantity, totalPrice } = cartItem;
+  const { cartItemId, productId, product, quantity, totalPrice } = cartItem;
 
   const handleRemoveFromCart = () => {
-    dispatch(removeCartItem(cartItemId));
+    const jwt = Cookies.get("jwt");
+    if (jwt) {
+      dispatch(removeCartItem(cartItemId));
+    } else {
+      dispatch(removeCartItemOffline(productId));
+    }
   };
 
   const handleQuantityChanged = (event: SelectChangeEvent<number>) => {
     const quantity = event.target.value as number;
-    dispatch(updateCartItemQuantity({ cartItemId, quantity }));
+    const jwt = Cookies.get("jwt");
+    if (jwt) {
+      dispatch(updateCartItemQuantity({ cartItemId, quantity }));
+    } else {
+      dispatch(updateCartItemQuantityOffine({ productId, quantity }));
+    }
   };
 
   return (
