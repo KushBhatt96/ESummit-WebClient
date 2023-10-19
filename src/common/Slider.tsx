@@ -1,14 +1,9 @@
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@mui/icons-material";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
-
-interface Slide {
-  id: number;
-  title: string;
-  pictureUrl: string;
-}
+import { Slide } from "./interfaces/CommonInterfaces";
 
 interface Props {
   slides: Slide[];
@@ -16,10 +11,6 @@ interface Props {
   numVisibleDesiredOnSmall: number;
 }
 
-// TODO: simply math for calculating sizes and transition
-// TODO: enforce limits on the props as they make sense
-// TODO: Fix the buttons at the bottom of the slider indicating position
-// TODO: When hiddenSlides == 0, conditionally render without the arrows
 function Slider({
   slides,
   numVisibleDesiredOnLarge,
@@ -40,132 +31,88 @@ function Slider({
   const slideWidth = 100 / numSlidesVisible;
   const numHiddenRight = Math.round(hiddenSlides / 2);
   const numHiddenLeft = hiddenSlides - numHiddenRight;
-  const rightPositionLimit = numHiddenRight * -slideWidth;
-  const leftPositionLimit = numHiddenLeft * slideWidth;
+  const leftPositionLimit = numHiddenRight * -slideWidth;
+  const rightPositionLimit = numHiddenLeft * slideWidth;
   const isHiddenSlidesOdd = hiddenSlides % 2 == 1;
+  const slideMarginX = 0.01;
 
-  const [sliderPosition, setSliderPosition] = useState<number>(0);
+  const [sliderPosition, setSliderPosition] = useState(0);
 
   useEffect(() => {
     setSliderPosition(0);
   }, [isMediumOrGreater]);
 
   const slideStyle = {
-    marginX: "1%",
-    background: "white",
+    marginX: `${slideMarginX * 100}%`,
+    borderRadius: "15px",
   };
 
-  const slideStyleLeftMargin = {
-    ...slideStyle,
-    marginLeft: `${slideWidth + 1}%`,
-  };
-
-  const leftArrowStyles = {
+  const arrowStyles = (translateX: number, translateY: number) => ({
     top: "50%",
     position: "absolute",
-    transform: "translate(50%, -50%)",
-    fontSize: "50px",
-    color: "primary.main",
-    zIndex: 1,
+    transform: `translate(${translateX}%, ${translateY}%)`,
+    fontSize: "60px",
     cursor: "pointer",
     "&:hover": { color: "secondary.main" },
-  };
+  });
 
-  const rightArrowStyles = {
-    top: "50%",
-    position: "absolute",
-    transform: "translate(-150%, -50%)",
-    fontSize: "50px",
-    color: "primary.main",
-    zIndex: 1,
-    cursor: "pointer",
-    "&:hover": { color: "secondary.main" },
-  };
-
-  const slideRight = () => {
+  const revealRight = () => {
     setSliderPosition((prevState) =>
-      prevState > rightPositionLimit ? prevState - slideWidth : prevState
+      prevState > leftPositionLimit ? prevState - slideWidth : prevState
     );
   };
 
-  const slideLeft = () => {
+  const revealLeft = () => {
     setSliderPosition((prevState) =>
-      prevState < leftPositionLimit ? prevState + slideWidth : prevState
+      prevState < rightPositionLimit ? prevState + slideWidth : prevState
     );
   };
 
   return (
-    <>
-      <Grid
-        container
-        position="relative"
-        display="flex"
-        justifyContent="center"
-        flexWrap="nowrap"
-      >
-        <Grid item onClick={slideLeft}>
-          <KeyboardArrowLeft sx={leftArrowStyles} />
-        </Grid>
+    <Grid container position="relative">
+      <Grid item onClick={revealLeft}>
+        <KeyboardArrowLeft sx={arrowStyles(-100, -50)} />
+      </Grid>
+      <Grid item position="relative" width="100%" overflow="hidden">
         <Grid
-          item
+          container
           position="relative"
           width="100%"
-          display="flex"
           justifyContent="center"
-          overflow="hidden"
+          flexWrap="nowrap"
+          sx={{
+            transform: `translate(${sliderPosition}%, 0)`,
+            transitionDuration: "0.5s",
+            marginLeft: isHiddenSlidesOdd ? `${slideWidth / 2}%` : 0,
+          }}
         >
-          <Grid
-            container
-            position="relative"
-            width="100%"
-            display="flex"
-            justifyContent="center"
-            flexWrap="nowrap"
-            sx={{
-              transform: `translate(${sliderPosition}%, 0)`,
-              transitionDuration: "0.5s",
-            }}
-          >
-            {validatedSlides.map((slide, index) => (
-              <Grid
-                item
-                key={slide.id}
-                // 0.02 because that is 2 * 0.01, where 0.01 represents the 1% margin used in the slideStyle
-                // TODO: simply math to make it easier to understand
-                xs={((1 - numSlidesVisible * 0.02) * 12) / numSlidesVisible}
-                md={((1 - numSlidesVisible * 0.02) * 12) / numSlidesVisible}
-                component="img"
-                src={slide.pictureUrl}
-                sx={
-                  isHiddenSlidesOdd && index == 0
-                    ? slideStyleLeftMargin
-                    : slideStyle
-                }
-              />
-            ))}
-          </Grid>
-        </Grid>
-        <Grid item onClick={slideRight}>
-          <KeyboardArrowRight sx={rightArrowStyles} />
+          {validatedSlides.map((slide) => (
+            <Grid
+              item
+              key={slide.id}
+              // Firstly calcuate the percentage of space that is occupied by the visible slides. Note that the remaining space is taken up by the slideMarginX.
+              // Multiply that calcuated percentage by 12 (because 12 is the total number of columsn in flexbox)
+              // Divide the resulting number (should be less than 12) by the number of visible slides
+              // This results in the number of flexbox columns occupied by each slide
+              xs={
+                ((1 - numSlidesVisible * 2 * slideMarginX) * 12) /
+                numSlidesVisible
+              }
+              md={
+                ((1 - numSlidesVisible * 2 * slideMarginX) * 12) /
+                numSlidesVisible
+              }
+              component="img"
+              src={slide.pictureUrl}
+              sx={slideStyle}
+            />
+          ))}
         </Grid>
       </Grid>
-      {/* <Box display="flex" justifyContent="center">
-        {slideStateArray.map((slideState, index) => {
-          if (-slideState === sliderPosition) {
-            return (
-              <Typography key={index} color="black" fontSize="4rem">
-                .
-              </Typography>
-            );
-          }
-          return (
-            <Typography key={index} color="gray" fontSize="4rem">
-              .
-            </Typography>
-          );
-        })}
-      </Box> */}
-    </>
+      <Grid item onClick={revealRight}>
+        <KeyboardArrowRight sx={arrowStyles(0, -50)} />
+      </Grid>
+    </Grid>
   );
 }
 

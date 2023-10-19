@@ -101,7 +101,7 @@ function ProductCard({ product }: Props) {
         <CardActions>
           <Button
             sx={{
-              color: "action.active",
+              color: "text.primary",
               marginRight: 1,
             }}
             onClick={handleAddToCart}
@@ -111,7 +111,7 @@ function ProductCard({ product }: Props) {
             Add to cart
           </Button>
           <Link to={`/catalog/${productId}`}>
-            <Button sx={{ color: "action.active" }} size="small">
+            <Button sx={{ color: "text.primary" }} size="small">
               View
             </Button>
           </Link>

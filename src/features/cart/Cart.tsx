@@ -18,7 +18,7 @@ function Cart() {
   }
 
   return (
-    <Container>
+    <Container sx={{ marginY: "2rem" }}>
       <Grid container columnSpacing={6} rowSpacing={2}>
         <Grid item xs={12} md={8.5}>
           <Typography variant="h4">Shopping Cart</Typography>

@@ -56,7 +56,7 @@ function Login() {
   }
 
   return (
-    <Grid container>
+    <Grid container marginY="2rem">
       <Grid item xs={1} md={4} />
       <Grid
         item
@@ -88,23 +88,29 @@ function Login() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Username"
               onChange={(e) => setUsername(e.target.value)}
-              sx={{ width: "100%" }}
+              fullWidth
             />
           </Grid>
           <Grid item xs={12} width="90%">
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Password"
               type="password"
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ width: "100%" }}
+              fullWidth
             />
           </Grid>
           <Grid item xs={12} marginTop="1rem">
-            <Button variant="contained" onClick={handleLoginSubmit}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleLoginSubmit}
+            >
               Submit
             </Button>
           </Grid>

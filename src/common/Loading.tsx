@@ -1,6 +1,5 @@
 import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
 
-// Make the loading message and size options props
 interface Props {
   message?: string;
   size?: LoadingSizes;

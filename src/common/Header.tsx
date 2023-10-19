@@ -49,7 +49,7 @@ function Header({
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   return (
-    <AppBar position="sticky" sx={{ mb: 4 }}>
+    <AppBar position="sticky">
       <Toolbar
         sx={{
           display: "flex",

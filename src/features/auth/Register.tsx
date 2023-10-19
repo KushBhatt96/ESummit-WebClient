@@ -1,5 +1,9 @@
 import { Button, Grid, Paper, TextField, Typography } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+import {
+  DatePicker,
+  DateTimePicker,
+  DesktopDatePicker,
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useState } from "react";
@@ -82,7 +86,7 @@ function Register() {
   };
 
   return (
-    <Grid container>
+    <Grid container marginY="2rem">
       <Grid item xs={1} md={4} />
       <Grid
         item
@@ -107,6 +111,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="First name"
               sx={{ width: "100%" }}
               onChange={(e) => setFirstName(e.target.value)}
@@ -116,6 +121,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Last name"
               sx={{ width: "100%" }}
               onChange={(e) => setLastName(e.target.value)}
@@ -129,6 +135,14 @@ function Register() {
                 onChange={(selectedDate) =>
                   handleDateSelected(selectedDate as Date)
                 }
+                sx={{
+                  ".Mui-focused": {
+                    color: "teal !important",
+                  },
+                  ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "teal !important",
+                  },
+                }}
               />
             </LocalizationProvider>
           </Grid>
@@ -136,6 +150,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Email"
               sx={{ width: "100%" }}
               onChange={(e) => setEmail(e.target.value)}
@@ -145,6 +160,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Username"
               sx={{ width: "100%" }}
               onChange={(e) => setUsername(e.target.value)}
@@ -154,6 +170,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Password"
               type="password"
               sx={{ width: "100%" }}
@@ -164,6 +181,7 @@ function Register() {
             <TextField
               required
               id="outlined-required"
+              color="secondary"
               label="Re-enter password"
               type="password"
               onChange={(e) => setReenterPassword(e.target.value)}
@@ -174,6 +192,7 @@ function Register() {
           <Grid item xs={12}>
             <Button
               variant="contained"
+              color="secondary"
               onClick={handleRegisterSubmit}
               disabled={handleIsSubmitDisabled()}
             >

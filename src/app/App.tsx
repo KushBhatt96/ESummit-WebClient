@@ -4,7 +4,15 @@ import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
-import { blue, green, grey, red, yellow } from "@mui/material/colors";
+import {
+  blue,
+  blueGrey,
+  green,
+  grey,
+  red,
+  teal,
+  yellow,
+} from "@mui/material/colors";
 
 import Header from "../common/Header";
 import AppRoutes from "./Routes";
@@ -26,7 +34,7 @@ function App() {
   const handleLogout = () => {
     Cookies.remove("jwt");
     dispatch(logout());
-    window.location.href = "/"; // causes a full refresh and navigates to desired location
+    window.location.href = "/"; // causes a full refresh and navigates to desired route
   };
 
   useEffect(() => {
@@ -39,7 +47,7 @@ function App() {
   }, []);
 
   const paletteMode = isDarkMode ? "dark" : "light";
-  const backgroundColorMode = isDarkMode ? "#263238" : "#E9E9E9";
+  const defaultBackgroundColorMode = isDarkMode ? blueGrey["900"] : grey["200"];
 
   const theme = createTheme({
     typography: {
@@ -48,14 +56,14 @@ function App() {
     palette: {
       mode: paletteMode,
       background: {
-        default: backgroundColorMode,
+        default: defaultBackgroundColorMode,
       },
       primary: {
         light: grey["300"],
         main: grey["900"],
       },
       secondary: {
-        main: green["300"],
+        main: teal["400"],
       },
       error: {
         main: red["A400"],

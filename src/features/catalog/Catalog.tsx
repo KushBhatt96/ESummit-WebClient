@@ -28,7 +28,7 @@ function Catalog() {
     );
 
   return (
-    <Container>
+    <Container sx={{ marginY: "2rem" }}>
       <ProductList products={products} />
     </Container>
   );
