@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
+  Box,
   Container,
   Divider,
   Grid,
@@ -21,6 +22,7 @@ function ProductDetail() {
 
   const [product, setProduct] = useState<Product | undefined>();
   const [loading, setLoading] = useState(true);
+  const [isZoomedIntoProduct, setIsZoomedIntoProduct] = useState(false);
 
   useEffect(() => {
     async function getProduct() {
@@ -52,9 +54,42 @@ function ProductDetail() {
     return <NotFound />;
   }
 
+  const handleZoomIn = () => {
+    setIsZoomedIntoProduct(true);
+  };
+
+  const handleZoomOut = () => {
+    setIsZoomedIntoProduct(false);
+  };
+
+  if (isZoomedIntoProduct) {
+    return (
+      <Container
+        sx={{
+          marginY: "2rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          component="img"
+          src={product.pictureUrl}
+          sx={{
+            cursor: "zoom-out",
+            background: "linear-gradient(#b2d8d8, #66b2b2)",
+            borderRadius: "5px",
+            "&:hover": { border: "2px #006666 solid" },
+          }}
+          onClick={handleZoomOut}
+        />
+      </Container>
+    );
+  }
+
   return (
-    <Container>
-      <Grid container marginTop={6}>
+    <Container sx={{ marginY: "2rem" }}>
+      <Grid container columnSpacing={4}>
         <Grid
           item
           xs={12}
@@ -63,10 +98,19 @@ function ProductDetail() {
           justifyContent="center"
           alignItems="center"
         >
-          <img
+          <Box
+            component="img"
             src={product.pictureUrl}
             alt={product.name}
-            style={{ width: "100%", height: "100%" }}
+            sx={{
+              width: "100%",
+              height: "100%",
+              cursor: "zoom-in",
+              background: "linear-gradient(#b2d8d8, #66b2b2)",
+              borderRadius: "5px",
+              "&:hover": { border: "2px #006666 solid" },
+            }}
+            onClick={handleZoomIn}
           />
         </Grid>
         <Grid item xs={12} sm={8}>
@@ -75,27 +119,38 @@ function ProductDetail() {
           <Typography variant="h4" color="secondary">
             ${(product.price / 100).toFixed(2)}
           </Typography>
+          <Divider sx={{ mb: 2 }} />
           <TableContainer>
             <Table>
               <TableBody>
                 <TableRow>
-                  <TableCell>Name</TableCell>
+                  <TableCell>
+                    <strong>Name</strong>
+                  </TableCell>
                   <TableCell>{product.name}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Description</TableCell>
+                  <TableCell>
+                    <strong>Description</strong>
+                  </TableCell>
                   <TableCell>{product.description}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Type</TableCell>
+                  <TableCell>
+                    <strong>Type</strong>
+                  </TableCell>
                   <TableCell>{product.type}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Brand</TableCell>
+                  <TableCell>
+                    <strong>Brand</strong>
+                  </TableCell>
                   <TableCell>{product.brand}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Quantity in stock</TableCell>
+                  <TableCell>
+                    <strong>Quantity in stock</strong>
+                  </TableCell>
                   <TableCell>{product.quantityInStock}</TableCell>
                 </TableRow>
               </TableBody>

@@ -1,28 +1,37 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
+import { cursorTypes } from "./interfaces/CommonTypes";
 
 interface Props {
   firstImage: string;
   secondImage: string;
   outerStyles: object;
+  cursorType: cursorTypes;
 }
 
-function HoverImage({ firstImage, secondImage, outerStyles }: Props) {
+function HoverImage({
+  firstImage,
+  secondImage,
+  outerStyles,
+  cursorType,
+}: Props) {
   const [currentImage, setCurrentImage] = useState(firstImage);
 
-  const handleHover = () => {
-    setCurrentImage((prevState) =>
-      prevState === firstImage ? secondImage : firstImage
-    );
+  const handleEnter = () => {
+    setCurrentImage(secondImage);
+  };
+
+  const handleLeave = () => {
+    setCurrentImage(firstImage);
   };
 
   return (
     <Box
       component="img"
       src={currentImage}
-      onMouseEnter={handleHover}
-      onMouseLeave={handleHover}
-      sx={outerStyles}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      sx={{ ...outerStyles, cursor: cursorType }}
     ></Box>
   );
 }

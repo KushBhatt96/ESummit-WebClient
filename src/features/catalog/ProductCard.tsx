@@ -1,5 +1,6 @@
 import {
   Alert,
+  Box,
   Button,
   Card,
   CardActions,
@@ -84,7 +85,11 @@ function ProductCard({ product }: Props) {
           }}
           title={name}
         >
-          <img src={pictureUrl} style={{ width: "80%", height: "80%" }} />
+          <Box
+            component="img"
+            src={pictureUrl}
+            sx={{ width: "80%", height: "80%" }}
+          />
         </CardMedia>
         <CardContent>
           <Typography gutterBottom fontWeight="bold">

@@ -6,7 +6,7 @@ function ServerError() {
   const { state }: { state: ProblemDetails } = useLocation();
 
   return (
-    <Container component={Paper}>
+    <Container component={Paper} sx={{ marginY: "2rem", padding: "2rem" }}>
       {state && (
         <>
           <Typography gutterBottom variant="h3" color="secondary">

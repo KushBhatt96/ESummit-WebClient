@@ -75,7 +75,7 @@ function Home() {
     height: `${heightPercentage}vh`,
     boxShadow:
       "0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.2)",
-    borderRadius: "15px",
+    borderRadius: "5px",
   });
 
   return (
@@ -99,6 +99,7 @@ function Home() {
             slides={sliderSlides}
             numVisibleDesiredOnLarge={4}
             numVisibleDesiredOnSmall={2}
+            cursorType="pointer"
           />
         </Grid>
         <Grid item xs={8} sx={{ display: "flex", justifyContent: "center" }}>
@@ -113,6 +114,7 @@ function Home() {
             firstImage="/images/winter_jacket.png"
             secondImage="/images/winter_jacket2.png"
             outerStyles={getBoxStyles(40)}
+            cursorType="pointer"
           />
         </Grid>
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>

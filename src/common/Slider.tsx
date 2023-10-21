@@ -4,17 +4,20 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
 import { Slide } from "./interfaces/CommonInterfaces";
+import { cursorTypes } from "./interfaces/CommonTypes";
 
 interface Props {
   slides: Slide[];
   numVisibleDesiredOnLarge: number;
   numVisibleDesiredOnSmall: number;
+  cursorType: cursorTypes;
 }
 
 function Slider({
   slides,
   numVisibleDesiredOnLarge,
   numVisibleDesiredOnSmall,
+  cursorType = "default",
 }: Props) {
   const theme = useTheme();
   const isMediumOrGreater = useMediaQuery(theme.breakpoints.up("md"));
@@ -44,7 +47,8 @@ function Slider({
 
   const slideStyle = {
     marginX: `${slideMarginX * 100}%`,
-    borderRadius: "15px",
+    borderRadius: "5px",
+    cursor: `${cursorType}`,
   };
 
   const arrowStyles = (translateX: number, translateY: number) => ({

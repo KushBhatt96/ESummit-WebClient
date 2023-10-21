@@ -18,9 +18,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
-  },
 }));
 
 interface Props {
@@ -36,7 +33,7 @@ function CartItemAddedDialog({ isOpen, handleClose, product }: Props) {
       aria-labelledby="customized-dialog-title"
       open={isOpen}
     >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+      <DialogTitle sx={{ p: 2 }} fontWeight={600} id="customized-dialog-title">
         Added to cart
       </DialogTitle>
       <IconButton
@@ -67,15 +64,15 @@ function CartItemAddedDialog({ isOpen, handleClose, product }: Props) {
                     <Typography variant="h5">{product.name}</Typography>
                   </TableRow>
                   <TableRow>
-                    <strong>Brand:</strong>
+                    <strong style={{ marginRight: "1ch" }}>Brand:</strong>
                     {product.brand}
                   </TableRow>
                   <TableRow>
-                    <strong>Type:</strong>
+                    <strong style={{ marginRight: "1ch" }}>Type:</strong>
                     {product.type}
                   </TableRow>
                   <TableRow>
-                    <strong>Price:</strong>
+                    <strong style={{ marginRight: "1ch" }}>Price:</strong>
                     {product.price}
                   </TableRow>
                 </TableBody>
