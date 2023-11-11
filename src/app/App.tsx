@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { selectCartQuatity } from "../features/cart/CartSlice";
 import { loadCartOffline, loadCart } from "../features/cart/CartSlice";
 import { logout } from "../features/auth/AuthSlice";
+import { fetchFilters } from "../features/catalog/ProductSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ function App() {
     } else {
       dispatch(loadCartOffline());
     }
+    dispatch(fetchFilters());
   }, []);
 
   const paletteMode = isDarkMode ? "dark" : "light";

@@ -6,18 +6,27 @@ import {
   IconButton,
   List,
   ListItem,
+  TextField,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 
-import { Link, NavLink } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectIsLoggedIn } from "../features/auth/AuthSlice";
+import { grey, teal } from "@mui/material/colors";
+import { useState, KeyboardEvent, MouseEvent, BaseSyntheticEvent } from "react";
+import {
+  fetchProducts,
+  saveSearchText,
+  setSelectedSex,
+} from "../features/catalog/ProductSlice";
 
 const midLinks = [
-  { id: 1, title: "Catalog", path: "/catalog" },
-  { id: 2, title: "About", path: "/about" },
-  { id: 3, title: "Contact", path: "/contact" },
+  { id: 1, title: " Browse Catalog", path: "/catalog" },
+  // { id: 2, title: "About", path: "/about" },
+  // { id: 3, title: "Contact", path: "/contact" },
 ];
 
 const rightLinks = [
@@ -38,6 +47,12 @@ function Header({
   cartQuantity,
   onHandleLogout,
 }: Props) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const theme = useTheme();
+  const catalogMenuOptions = useAppSelector((state) => state.product.sex);
+
   const activeLinkStyling = {
     color: "inherit",
     textDecoration: "none",
@@ -47,9 +62,37 @@ function Header({
   };
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const [searchText, setSearchText] = useState("");
+  const [hoveringCatalog, setHoveringCatalog] = useState(false);
+
+  const handleSearchKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      dispatch(saveSearchText(searchText));
+      if (location.pathname === "/catalog") {
+        dispatch(fetchProducts(1));
+      } else {
+        navigate("/catalog");
+      }
+    }
+  };
+
+  const handleCatalogLinkMouseEnter = () => {
+    setHoveringCatalog(true);
+  };
+
+  const handleCatalogLinkMouseLeave = () => {
+    setHoveringCatalog(false);
+  };
+
+  const handleSetSex = (e: BaseSyntheticEvent) => {
+    dispatch(setSelectedSex(e.target.text));
+    if (location.pathname === "/catalog") {
+      dispatch(fetchProducts(1));
+    }
+  };
 
   return (
-    <AppBar position="sticky">
+    <AppBar position="sticky" onMouseLeave={handleCatalogLinkMouseLeave}>
       <Toolbar
         sx={{
           display: "flex",
@@ -78,6 +121,7 @@ function Header({
                 component={NavLink}
                 to={path}
                 sx={activeLinkStyling}
+                onMouseEnter={handleCatalogLinkMouseEnter}
               >
                 {title.charAt(0).toUpperCase() + title.slice(1)}
               </ListItem>
@@ -85,6 +129,41 @@ function Header({
           </List>
         </Box>
         <Box display="flex" alignItems="center">
+          <TextField
+            id="outlined-basic"
+            label="Search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            variant="outlined"
+            size="small"
+            color="secondary"
+            sx={{
+              mr: 4,
+              input: { color: "white" },
+              label: {
+                color: "white",
+              },
+              "&:hover label": {
+                color: teal[400],
+              },
+              "& .MuiInput-underline:after": {
+                borderBottomColor: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: teal[400],
+                  borderWidth: 2,
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: teal[400],
+                },
+              },
+            }}
+          />
           <IconButton
             component={Link}
             to="/cart"
@@ -126,6 +205,33 @@ function Header({
           </List>
         </Box>
       </Toolbar>
+      {hoveringCatalog && (
+        <Toolbar
+          sx={{
+            display: "flex",
+            position: "absolute",
+            top: "99%",
+            width: "100%",
+            background: `linear-gradient(${theme.palette.primary.main}, #121212)`,
+          }}
+        >
+          <Box marginX="20%">
+            <List>
+              {catalogMenuOptions.map((option) => (
+                <ListItem
+                  key={option}
+                  component={Link}
+                  to={"/catalog"}
+                  sx={activeLinkStyling}
+                  onClick={handleSetSex}
+                >
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Toolbar>
+      )}
     </AppBar>
   );
 }

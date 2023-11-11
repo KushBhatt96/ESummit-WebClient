@@ -27,7 +27,8 @@ interface Props {
 }
 
 function ProductCard({ product }: Props) {
-  const { productId, name, pictureUrl, type, price } = product;
+  const { productId, name, pictureUrl, transitionPictureUrl, type, price } =
+    product;
   const associatedCartItem = useAppSelector((state) =>
     selectCartItem(state, productId)
   );
@@ -36,6 +37,17 @@ function ProductCard({ product }: Props) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [currentPicture, setCurrentPicture] = useState<string | undefined>(
+    pictureUrl
+  );
+
+  const handleProductHoverIn = () => {
+    setCurrentPicture(transitionPictureUrl);
+  };
+
+  const handleProductHoverOut = () => {
+    setCurrentPicture(pictureUrl);
+  };
 
   // TODO: Possibly make max quanity come from backend
   const handleAddToCart = () => {
@@ -76,32 +88,37 @@ function ProductCard({ product }: Props) {
       <Card sx={{ boxShadow: 4 }}>
         <CardMedia
           sx={{
-            height: 300,
             backgroundSize: "contain",
             bgcolor: "primary.light",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            //padding: "1rem",
           }}
           title={name}
         >
           <Box
             component="img"
-            src={pictureUrl}
+            src={currentPicture}
             sx={{ width: "80%", height: "80%" }}
+            onMouseEnter={handleProductHoverIn}
+            onMouseLeave={handleProductHoverOut}
           />
         </CardMedia>
         <CardContent>
-          <Typography gutterBottom fontWeight="bold">
-            {name}
-          </Typography>
-          <Typography gutterBottom color="secondary" variant="h6">
-            ${(price / 100).toFixed(2)}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {type}
-          </Typography>
-          {isAlertOpen && MaxQuantityAlert}
+          <Box height="6rem">
+            <Typography gutterBottom fontWeight="bold">
+              {name}
+            </Typography>
+
+            <Typography gutterBottom color="secondary" variant="h6">
+              ${(price / 100).toFixed(2)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {type}
+            </Typography>
+            {isAlertOpen && MaxQuantityAlert}
+          </Box>
         </CardContent>
         <CardActions>
           <Button

@@ -28,42 +28,42 @@ const sliderSlides: Slide[] = [
   {
     id: 1,
     title: "slide 1",
-    pictureUrl: "/images/bluegreen_shoes.png",
+    pictureUrl: "/images/products_new/womens_kubernetes_lightblue_top.png",
   },
   {
     id: 2,
     title: "slide 2",
-    pictureUrl: "/images/beige_scarf.png",
+    pictureUrl: "/images/products_new/womens_typescript_whitesmoke_top.png",
   },
   {
     id: 3,
     title: "slide 3",
-    pictureUrl: "/images/black_shirt.png",
+    pictureUrl: "/images/products_new/mens_kubernetes_whitesmoke_bottom.png",
   },
   {
     id: 4,
     title: "slide 4",
-    pictureUrl: "/images/teal_shirt.png",
+    pictureUrl: "/images/products_new/mens_docker_pink_top.png",
   },
   {
     id: 5,
     title: "slide 5",
-    pictureUrl: "/images/white_jacket.png",
+    pictureUrl: "/images/products_new/mens_csharp_whitesmoke_jacket.png",
   },
   {
     id: 6,
     title: "slide 6",
-    pictureUrl: "/images/pink_shoes.png",
+    pictureUrl: "/images/products_new/womens_react_grey_top.png",
   },
   {
     id: 7,
     title: "slide 7",
-    pictureUrl: "/images/bluegreen_shoes.png",
+    pictureUrl: "/images/products_new/womens_redux_green_top.png",
   },
   {
     id: 8,
     title: "slide 8",
-    pictureUrl: "/images/beige_scarf.png",
+    pictureUrl: "/images/products_new/mens_react_black_jacket.png",
   },
 ];
 

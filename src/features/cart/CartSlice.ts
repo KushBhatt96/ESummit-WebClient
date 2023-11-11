@@ -26,7 +26,7 @@ const initialState: CartState = {
 export const loadCart = createAsyncThunk(
   "cart/getCart",
   async (_, { getState }) => {
-    const currentState: RootState = getState() as RootState;
+    const currentState = getState() as RootState;
     const localCartItems = currentState.cart.cartItems;
     const jwt = Cookies.get("jwt");
     const config = {

@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { Slide } from "./interfaces/CommonInterfaces";
+import { teal } from "@mui/material/colors";
 
 interface Props {
   slides: Slide[];
@@ -25,6 +26,8 @@ function Carousel({ slides, outerStyles }: Props) {
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundImage: `url(${slides[currentIndex].pictureUrl})`,
+    "&:hover": { border: `5px ${teal[400]} solid` },
+    cursor: "pointer",
   };
 
   return <Box sx={{ ...innerStyles, ...outerStyles }} />;

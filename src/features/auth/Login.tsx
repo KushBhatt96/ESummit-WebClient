@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading, { LoadingSizes } from "../../common/Loading";
@@ -15,36 +15,42 @@ import Cookies from "js-cookie";
 import { loadCart } from "../cart/CartSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { login } from "./AuthSlice";
+import useForm from "../../common/hooks/useForm";
 
 const baseUrl = "http://localhost:5119/api";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { values, handleChange, reset } = useForm();
+  const { username, password } = values;
 
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleLoginSubmit = async () => {
+  const handleLoginSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setIsLoading(() => true);
-      const response = await axios.post(`${baseUrl}/Account/Login`, {
+      const { data, status } = await axios.post(`${baseUrl}/Account/Login`, {
         username,
         password,
       });
-      if (response.status === 200) {
+      if (status === 200) {
         const cookieExpirationPeriod = new Date(
           new Date().getTime() + 5 * 60 * 1000
         );
-        Cookies.set("jwt", response.data, { expires: cookieExpirationPeriod });
+        Cookies.set("jwt", data.jwt, {
+          expires: cookieExpirationPeriod,
+        });
         dispatch(loadCart());
-        dispatch(login());
+        dispatch(login(data));
         setIsLoading(() => false);
         navigate("/", { state: { isLoggedIn: true } });
       }
     } catch (error: any) {
+      reset();
       toast.error(error.data.detail);
     } finally {
       setIsLoading(() => false);
@@ -73,6 +79,8 @@ function Login() {
           alignItems="center"
           paddingY="1rem"
           rowSpacing="1rem"
+          component="form"
+          onSubmit={handleLoginSubmit}
         >
           <Grid item xs={12} marginBottom="1rem">
             <Typography variant="h5">Login</Typography>
@@ -90,7 +98,8 @@ function Login() {
               id="outlined-required"
               color="secondary"
               label="Username"
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              onChange={handleChange}
               fullWidth
             />
           </Grid>
@@ -100,8 +109,9 @@ function Login() {
               id="outlined-required"
               color="secondary"
               label="Password"
+              name="password"
               type="password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
               fullWidth
             />
           </Grid>
@@ -109,7 +119,8 @@ function Login() {
             <Button
               variant="contained"
               color="secondary"
-              onClick={handleLoginSubmit}
+              type="submit"
+              disabled={!username || !password}
             >
               Submit
             </Button>

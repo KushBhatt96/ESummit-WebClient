@@ -29,7 +29,7 @@ function ProductDetail() {
       // make the api call only if id is truthy (i.e. not undefined)
       if (id) {
         try {
-          const data = await agent.Catalog.details(parseInt(id, 10));
+          const data: Product = await agent.Catalog.details(parseInt(id, 10));
           setProduct(data);
         } catch (error) {
           console.log(error);
@@ -68,6 +68,7 @@ function ProductDetail() {
         sx={{
           marginY: "2rem",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -75,6 +76,18 @@ function ProductDetail() {
         <Box
           component="img"
           src={product.pictureUrl}
+          sx={{
+            cursor: "zoom-out",
+            background: "linear-gradient(#b2d8d8, #66b2b2)",
+            borderRadius: "5px",
+            "&:hover": { border: "2px #006666 solid" },
+            marginY: "2rem",
+          }}
+          onClick={handleZoomOut}
+        />
+        <Box
+          component="img"
+          src={product.transitionPictureUrl}
           sx={{
             cursor: "zoom-out",
             background: "linear-gradient(#b2d8d8, #66b2b2)",
@@ -146,12 +159,6 @@ function ProductDetail() {
                     <strong>Brand</strong>
                   </TableCell>
                   <TableCell>{product.brand}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong>Quantity in stock</strong>
-                  </TableCell>
-                  <TableCell>{product.quantityInStock}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
