@@ -53,7 +53,7 @@ function CartItemAddedDialog({ isOpen, handleClose, product }: Props) {
           <Grid item xs={4}>
             <img
               src={product.pictureUrl}
-              style={{ height: "80%", width: "80%" }}
+              style={{ height: "90%", width: "80%" }}
             />
           </Grid>
           <Grid item xs={8}>

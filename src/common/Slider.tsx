@@ -5,6 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
 import { Slide } from "./interfaces/CommonInterfaces";
 import { cursorTypes } from "./interfaces/CommonTypes";
+import { grey, teal } from "@mui/material/colors";
 
 interface Props {
   slides: Slide[];
@@ -49,6 +50,9 @@ function Slider({
     marginX: `${slideMarginX * 100}%`,
     borderRadius: "5px",
     cursor: `${cursorType}`,
+    "&:hover": {
+      border: `3px ${teal[400]} solid`,
+    },
   };
 
   const arrowStyles = (translateX: number, translateY: number) => ({

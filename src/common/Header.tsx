@@ -3,9 +3,12 @@ import {
   AppBar,
   Badge,
   Box,
+  Button,
   IconButton,
   List,
   ListItem,
+  Menu,
+  MenuItem,
   TextField,
   Toolbar,
   Typography,
@@ -52,6 +55,15 @@ function Header({
   const location = useLocation();
   const theme = useTheme();
   const catalogMenuOptions = useAppSelector((state) => state.product.sex);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const activeLinkStyling = {
     color: "inherit",
@@ -106,9 +118,17 @@ function Header({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography component={NavLink} to="/" sx={activeLinkStyling}>
-            E-Summit
-          </Typography>
+          <Box component={NavLink} to="/">
+            <Box
+              component="img"
+              src="/images/esummit_transparent.png"
+              height="50%"
+              width="50%"
+              sx={{
+                "&:hover": { border: "1px teal solid" },
+              }}
+            />
+          </Box>
           <IconButton onClick={onThemeChanged}>
             {isDarkMode ? <DarkMode /> : <LightMode color="warning" />}
           </IconButton>
@@ -179,12 +199,8 @@ function Header({
           <List sx={{ display: "flex", justifyContent: "flex-end" }}>
             {isLoggedIn ? (
               <>
-                <ListItem
-                  component={NavLink}
-                  to="/Profile"
-                  sx={activeLinkStyling}
-                >
-                  Profile
+                <ListItem sx={activeLinkStyling} onClick={handleClick}>
+                  Account
                 </ListItem>
                 <ListItem sx={activeLinkStyling} onClick={onHandleLogout}>
                   Logout
@@ -204,6 +220,22 @@ function Header({
             )}
           </List>
         </Box>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem component={Link} to={"/profile"} onClick={handleClose}>
+            Profile
+          </MenuItem>
+          <MenuItem component={Link} to={"/orderHistory"} onClick={handleClose}>
+            Order History
+          </MenuItem>
+        </Menu>
       </Toolbar>
       {hoveringCatalog && (
         <Toolbar

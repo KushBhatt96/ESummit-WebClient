@@ -61,7 +61,7 @@ function CartListItem({ cartItem }: Props) {
         >
           <img
             src={product.pictureUrl}
-            style={{ height: "80%", width: "80%" }}
+            style={{ height: "70%", width: "80%" }}
           />
         </Grid>
         <Grid item sm={9}>

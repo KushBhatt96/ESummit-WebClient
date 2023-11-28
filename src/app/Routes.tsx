@@ -10,7 +10,8 @@ import NotFound from "../common/errors/NotFound";
 import Cart from "../features/cart/Cart";
 import Register from "../features/auth/Register";
 import Login from "../features/auth/Login";
-import Profile from "../features/profile/Profile";
+import Profile from "../features/account/Profile";
+import OrderHistory from "../features/account/OrderHistory";
 
 function AppRoutes() {
   return (
@@ -24,6 +25,7 @@ function AppRoutes() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/orderHistory" element={<OrderHistory />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/server-error" element={<ServerError />} />

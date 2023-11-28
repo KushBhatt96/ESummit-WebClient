@@ -28,42 +28,42 @@ const sliderSlides: Slide[] = [
   {
     id: 1,
     title: "slide 1",
-    pictureUrl: "/images/products_new/womens_kubernetes_lightblue_top.png",
+    pictureUrl: "/images/products/womens_kubernetes_lightblue_top.png",
   },
   {
     id: 2,
     title: "slide 2",
-    pictureUrl: "/images/products_new/womens_typescript_whitesmoke_top.png",
+    pictureUrl: "/images/products/womens_typescript_whitesmoke_top.png",
   },
   {
     id: 3,
     title: "slide 3",
-    pictureUrl: "/images/products_new/mens_kubernetes_whitesmoke_bottom.png",
+    pictureUrl: "/images/products/mens_kubernetes_whitesmoke_bottom.png",
   },
   {
     id: 4,
     title: "slide 4",
-    pictureUrl: "/images/products_new/mens_docker_pink_top.png",
+    pictureUrl: "/images/products/mens_docker_pink_top.png",
   },
   {
     id: 5,
     title: "slide 5",
-    pictureUrl: "/images/products_new/mens_csharp_whitesmoke_jacket.png",
+    pictureUrl: "/images/products/mens_csharp_whitesmoke_jacket.png",
   },
   {
     id: 6,
     title: "slide 6",
-    pictureUrl: "/images/products_new/womens_react_grey_top.png",
+    pictureUrl: "/images/products/womens_react_grey_top.png",
   },
   {
     id: 7,
     title: "slide 7",
-    pictureUrl: "/images/products_new/womens_redux_green_top.png",
+    pictureUrl: "/images/products/womens_redux_green_top.png",
   },
   {
     id: 8,
     title: "slide 8",
-    pictureUrl: "/images/products_new/mens_react_black_jacket.png",
+    pictureUrl: "/images/products/mens_react_black_jacket.png",
   },
 ];
 
@@ -103,22 +103,28 @@ function Home() {
           />
         </Grid>
         <Grid item xs={8} sx={{ display: "flex", justifyContent: "center" }}>
-          <Box
-            sx={getBoxStyles(40)}
-            component="img"
-            src="/images/running_shoes.png"
+          <HoverImage
+            firstImage="/images/woman_pink_shirt_action_picture.png"
+            secondImage="/images/woman_pink_shirt_action_picture2.png"
+            outerStyles={getBoxStyles(40)}
+            cursorType="pointer"
           />
         </Grid>
         <Grid item xs={4} sx={{ display: "flex", justifyContent: "center" }}>
           <HoverImage
-            firstImage="/images/winter_jacket.png"
-            secondImage="/images/winter_jacket2.png"
+            firstImage="/images/mens_blue_shirt_action_photo_1.png"
+            secondImage="/images/mens_blue_shirt_action_photo_2.png"
             outerStyles={getBoxStyles(40)}
             cursorType="pointer"
           />
         </Grid>
         <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-          <Box sx={getBoxStyles(40)} component="img" src="/images/scarf.jpg" />
+          <HoverImage
+            firstImage="/images/white_jacket_action_photo1.png"
+            secondImage="/images/black_jacket_action_photo1.png"
+            outerStyles={getBoxStyles(40)}
+            cursorType="pointer"
+          />
         </Grid>
       </Grid>
     </Container>

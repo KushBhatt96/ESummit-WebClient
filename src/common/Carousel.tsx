@@ -26,7 +26,7 @@ function Carousel({ slides, outerStyles }: Props) {
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundImage: `url(${slides[currentIndex].pictureUrl})`,
-    "&:hover": { border: `5px ${teal[400]} solid` },
+    "&:hover": { border: `3px ${teal[400]} solid` },
     cursor: "pointer",
   };
 
