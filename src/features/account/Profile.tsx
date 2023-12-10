@@ -1,8 +1,10 @@
 import {
   Box,
+  Button,
   Container,
   Grid,
   IconButton,
+  MenuItem,
   Paper,
   Switch,
   Table,
@@ -10,12 +12,18 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
+import Cookies from "js-cookie";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppSelector } from "../../app/hooks";
+import ProfileRow from "./ProfileRow";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import BasicInput from "../../common/BasicInput";
 
 function Profile() {
   const appUser = useAppSelector((state) => state.auth.appUser);
@@ -53,108 +61,165 @@ function Profile() {
             container
             marginY="2rem"
             padding="5px"
-            borderRadius="10px"
+            borderRadius="5px"
             component={Paper}
             elevation={5}
           >
             <TableContainer>
               <Table>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="h6">
-                        <strong>Name</strong>
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">{`${appUser.firstname} ${appUser.lastname}`}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="h6">
-                        <strong>Date of birth</strong>
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">{`${appUser.dateOfBirth}`}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="h6">
-                        <strong>Email Address</strong>
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">{`${appUser.email}`}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="h6">
-                        <strong>Username</strong>
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">{`${appUser.username}`}</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell sx={{ borderBottom: "none" }}>
-                      <Typography variant="h6">
-                        <strong>Password</strong>
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={{ borderBottom: "none" }}>
-                      {hiddenPasswordPlaceholder}
-                    </TableCell>
-                    <TableCell sx={{ borderBottom: "none" }}>
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                  <ProfileRow
+                    title="Name"
+                    value={`${appUser.firstname} ${appUser.lastname}`}
+                  >
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          color="secondary"
+                          label="First name"
+                          name="firstname"
+                          sx={{ width: "100%" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          color="secondary"
+                          label="Last name"
+                          name="lastname"
+                          sx={{ width: "100%" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </ProfileRow>
+                  <ProfileRow
+                    title="Date of birth"
+                    value={`${appUser.dateOfBirth}`}
+                  >
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            disableFuture
+                            label="Date of birth"
+                            onChange={(selectedDate) =>
+                              handleDateSelected(selectedDate as Date)
+                            }
+                            sx={{
+                              ".Mui-focused": {
+                                color: "teal !important",
+                              },
+                              ".Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "teal !important",
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </ProfileRow>
+                  <ProfileRow title="Email address" value={`${appUser.email}`}>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          color="secondary"
+                          label="Email"
+                          name="email"
+                          sx={{ width: "100%" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </ProfileRow>
+                  <ProfileRow
+                    title="Username"
+                    value={`${appUser.username}`}
+                    isEditable={false}
+                  />
+                  <ProfileRow
+                    title="Password"
+                    value={hiddenPasswordPlaceholder}
+                  >
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          color="secondary"
+                          label="Old Password"
+                          name="password"
+                          type="password"
+                          sx={{ width: "100%" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          color="secondary"
+                          label="New Password"
+                          name="password"
+                          type="password"
+                          sx={{ width: "100%" }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ borderBottom: "none" }}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </ProfileRow>
                 </TableBody>
               </Table>
             </TableContainer>
-          </Grid>
-          <Typography variant="h3">Communication Preferences</Typography>
-          <Grid
-            container
-            bgcolor="primary"
-            marginY="2rem"
-            padding="1.5rem"
-            borderRadius="10px"
-            component={Paper}
-            elevation={5}
-            display="flex"
-            flexDirection="column"
-          >
-            <Typography variant="h6">
-              Get email notifications about tracking updates.
-            </Typography>
-            <Switch />
           </Grid>
           <Typography variant="h3">Shipping Addresses</Typography>
           <Grid
@@ -162,7 +227,7 @@ function Profile() {
             bgcolor="primary"
             marginY="2rem"
             padding="1.5rem"
-            borderRadius="10px"
+            borderRadius="5px"
             component={Paper}
             elevation={5}
             display="flex"
@@ -175,21 +240,59 @@ function Profile() {
                   <TableBody>
                     {tempAddressList.map((address, index) => {
                       return (
-                        <TableRow key={index}>
-                          <TableCell>
-                            <Typography variant="h6">{address}</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <IconButton>
-                              <EditIcon />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell>
-                            <IconButton>
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
+                        <ProfileRow
+                          key={index}
+                          title={`Address ${index + 1}`}
+                          value={address}
+                          isDeletable={true}
+                        >
+                          <TableRow>
+                            <TableCell sx={{ borderBottom: "none" }}>
+                              <TextField
+                                id="outlined-required"
+                                color="secondary"
+                                label="Street Address"
+                                name="streetaddress"
+                                sx={{ width: "100%" }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ borderBottom: "none" }}>
+                              <BasicInput
+                                label="State"
+                                outerStyles={{
+                                  background: "primary",
+                                  width: "100%",
+                                }}
+                              >
+                                <MenuItem value="TX">CA</MenuItem>
+                                <MenuItem value="PA">PA</MenuItem>
+                                <MenuItem value="TX">TX</MenuItem>
+                              </BasicInput>
+                            </TableCell>
+                            <TableCell sx={{ borderBottom: "none" }}>
+                              <TextField
+                                id="outlined-required"
+                                color="secondary"
+                                label="Zip Code"
+                                name="Zip"
+                                sx={{ width: "100%" }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ borderBottom: "none" }}>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                type="submit"
+                              >
+                                Submit
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        </ProfileRow>
                       );
                     })}
                   </TableBody>

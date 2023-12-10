@@ -11,7 +11,6 @@ import { FormEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loading, { LoadingSizes } from "../../common/Loading";
-import Cookies from "js-cookie";
 import { loadCart } from "../cart/CartSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { login } from "./AuthSlice";
@@ -33,21 +32,21 @@ function Login() {
     e.preventDefault();
     try {
       setIsLoading(() => true);
-      const { data, status } = await axios.post(`${baseUrl}/Account/Login`, {
-        username,
-        password,
-      });
+      const { data, status } = await axios.post(
+        `${baseUrl}/Account/Login`,
+        {
+          username,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       if (status === 200) {
-        const cookieExpirationPeriod = new Date(
-          new Date().getTime() + 5 * 60 * 1000
-        );
-        Cookies.set("jwt", data.jwt, {
-          expires: cookieExpirationPeriod,
-        });
         dispatch(loadCart());
         dispatch(login(data));
         setIsLoading(() => false);
-        navigate("/", { state: { isLoggedIn: true } });
+        navigate("/", { replace: true, state: { isLoggedIn: true } });
       }
     } catch (error: any) {
       reset();

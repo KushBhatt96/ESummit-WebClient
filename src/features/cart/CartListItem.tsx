@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import Cookies from "js-cookie";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   removeCartItem,
   updateCartItemQuantity,
@@ -16,6 +16,7 @@ import {
   updateCartItemQuantityOffine,
 } from "./CartSlice";
 import { CartItem } from "../../models/CartItem";
+import { selectIsLoggedIn } from "../auth/AuthSlice";
 
 interface Props {
   cartItem: CartItem;
@@ -23,12 +24,11 @@ interface Props {
 
 function CartListItem({ cartItem }: Props) {
   const dispatch = useAppDispatch();
-
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const { cartItemId, productId, product, quantity, totalPrice } = cartItem;
 
   const handleRemoveFromCart = () => {
-    const jwt = Cookies.get("jwt");
-    if (jwt) {
+    if (isLoggedIn) {
       dispatch(removeCartItem(cartItemId));
     } else {
       dispatch(removeCartItemOffline(productId));
@@ -37,8 +37,7 @@ function CartListItem({ cartItem }: Props) {
 
   const handleQuantityChanged = (event: SelectChangeEvent<number>) => {
     const quantity = event.target.value as number;
-    const jwt = Cookies.get("jwt");
-    if (jwt) {
+    if (isLoggedIn) {
       dispatch(updateCartItemQuantity({ cartItemId, quantity }));
     } else {
       dispatch(updateCartItemQuantityOffine({ productId, quantity }));

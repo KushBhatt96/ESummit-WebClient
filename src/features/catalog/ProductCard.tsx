@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Product } from "../../models/Product";
 import {
@@ -21,6 +20,7 @@ import {
 import CartItemAddedDialog from "../../common/confirmationDialogs/CartItemAddedDialog";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { selectIsLoggedIn } from "../auth/AuthSlice";
 
 interface Props {
   product: Product;
@@ -33,6 +33,7 @@ function ProductCard({ product }: Props) {
     selectCartItem(state, productId)
   );
   const cartStatus = useAppSelector(selectCartStatus);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -52,8 +53,7 @@ function ProductCard({ product }: Props) {
   // TODO: Possibly make max quanity come from backend
   const handleAddToCart = () => {
     if (!associatedCartItem || associatedCartItem.quantity < 5) {
-      const jwt = Cookies.get("jwt");
-      if (jwt) {
+      if (isLoggedIn) {
         dispatch(addToCart(productId));
       } else {
         dispatch(addToCartOffline(product));

@@ -5,6 +5,7 @@ import axios from "axios";
 import { Cart } from "../../models/Cart";
 import { Product } from "../../models/Product";
 import Cookies from "js-cookie";
+import authSlice, { logoutOffline } from "./../auth/AuthSlice";
 
 // CONSTANTS
 const baseUrl = "http://localhost:5119";
@@ -28,22 +29,25 @@ export const loadCart = createAsyncThunk(
   async (_, { getState }) => {
     const currentState = getState() as RootState;
     const localCartItems = currentState.cart.cartItems;
-    const jwt = Cookies.get("jwt");
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
+
+    const headers = {
+      "Content-Type": "application/json",
     };
+
     if (localCartItems && localCartItems.length !== 0) {
-      await axios.post(
-        `${baseUrl}/api/cartItems/AppendLocalCartItems`,
-        localCartItems,
-        config
-      );
+      await axios(`${baseUrl}/api/cartItems/AppendLocalCartItems`, {
+        method: "post",
+        data: localCartItems,
+        headers: headers,
+        withCredentials: true,
+      });
     }
 
-    const response = await axios.get(`${baseUrl}/api/cart`, config);
+    const response = await axios(`${baseUrl}/api/cart`, {
+      method: "get",
+      headers: headers,
+      withCredentials: true,
+    });
 
     return response.data;
   }
@@ -51,32 +55,58 @@ export const loadCart = createAsyncThunk(
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async (productId: number) => {
-    const jwt = Cookies.get("jwt");
-    const config = {
-      method: "post",
-      url: `${baseUrl}/api/cartItems/${productId}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
+  async (productId: number, { dispatch }) => {
+    const headers = {
+      "Content-Type": "application/json",
     };
-    const response = await axios(config);
-    return response.data;
+    const request = async () =>
+      await axios(`${baseUrl}/api/cartItems/${productId}`, {
+        method: "post",
+        headers: headers,
+        withCredentials: true,
+      });
+    const refresh = async () =>
+      await axios(`${baseUrl}/api/Token/Refresh`, {
+        method: "post",
+        withCredentials: true,
+      });
+    try {
+      const response = await request();
+
+      return response.data;
+    } catch (error: any) {
+      if (error.status === 401) {
+        try {
+          await refresh();
+        } catch (error: any) {
+          if (error.status === 400) {
+            dispatch(logoutOffline());
+            dispatch(clearCartFromMemory());
+          }
+          throw error;
+        }
+        const response = await request();
+
+        return response.data;
+      } else {
+        throw error;
+      }
+    }
   }
 );
 
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
   async (cartItemId: number) => {
-    const jwt = Cookies.get("jwt");
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
+    const headers = {
+      "Content-Type": "application/json",
     };
-    await axios.delete(`${baseUrl}/api/cartItems/${cartItemId}`, config);
+
+    await axios(`${baseUrl}/api/cartItems/${cartItemId}`, {
+      method: "delete",
+      headers: headers,
+      withCredentials: true,
+    });
     return cartItemId;
   }
 );
@@ -90,17 +120,18 @@ export const updateCartItemQuantity = createAsyncThunk(
     cartItemId: number;
     quantity: number;
   }) => {
-    const params = {
+    const data = {
       quantity,
     };
-    const jwt = Cookies.get("jwt");
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
-      },
+    const headers = {
+      "Content-Type": "application/json",
     };
-    await axios.put(`${baseUrl}/api/cartItems/${cartItemId}`, params, config);
+    await axios(`${baseUrl}/api/cartItems/${cartItemId}`, {
+      method: "put",
+      headers: headers,
+      data: data,
+      withCredentials: true,
+    });
     return {
       cartItemId,
       quantity,
@@ -166,6 +197,11 @@ const cartSlice = createSlice({
       if (offlineCart) {
         state.cartItems = JSON.parse(offlineCart) as CartItem[];
       }
+    },
+    clearCartFromMemory: (state) => {
+      state.cartItems = [];
+      state.status = "idle";
+      state.error = "";
     },
   },
   extraReducers(builder) {
@@ -262,6 +298,7 @@ export const {
   loadCartOffline,
   removeCartItemOffline,
   updateCartItemQuantityOffine,
+  clearCartFromMemory,
 } = cartSlice.actions;
 
 // REDUCER

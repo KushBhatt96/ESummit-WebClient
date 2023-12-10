@@ -1,4 +1,4 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
@@ -19,11 +19,13 @@ import AppRoutes from "./Routes";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { selectCartQuatity } from "../features/cart/CartSlice";
 import { loadCartOffline, loadCart } from "../features/cart/CartSlice";
-import { logout } from "../features/auth/AuthSlice";
+import { logout, selectIsLoggedIn } from "../features/auth/AuthSlice";
 import { fetchFilters } from "../features/catalog/ProductSlice";
 
 function App() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const cartQuantity = useAppSelector(selectCartQuatity);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -33,14 +35,13 @@ function App() {
   };
 
   const handleLogout = () => {
-    Cookies.remove("jwt");
+    // TODO: Proper logout logic
     dispatch(logout());
-    window.location.href = "/"; // causes a full refresh and navigates to desired route
+    navigate("/", { replace: true });
   };
 
   useEffect(() => {
-    const jwt = Cookies.get("jwt");
-    if (jwt) {
+    if (isLoggedIn) {
       dispatch(loadCart());
     } else {
       dispatch(loadCartOffline());
