@@ -3,6 +3,15 @@ import { Product } from "../../models/Product";
 import axios from "axios";
 
 import { RootState } from "../../app/store";
+import { baseUrl } from "../../common/constants/constants";
+
+const productsPath = "/api/products";
+const fullProductsUrl = `${baseUrl}${productsPath}`;
+const getFiltersPath = "/getfilters";
+const getFiltersUrl = `${fullProductsUrl}${getFiltersPath}`;
+const defaultPageNumber = 1;
+const defaultSearchText = "";
+const separator = ",";
 
 interface productState {
   products: Product[];
@@ -37,37 +46,120 @@ const initialState: productState = {
   orderBy: "",
   searchText: "",
   pageCount: 1,
-  pageNumber: 1,
+  pageNumber: defaultPageNumber,
   status: "idle",
   error: "",
 };
 
-export const fetchProducts = createAsyncThunk(
-  "product/fetchProducts",
-  async (page: number | undefined, { getState, dispatch }) => {
+export const filterProducts = createAsyncThunk(
+  "product/filterProducts",
+  async (_, { getState, dispatch }) => {
     const currentState = getState() as RootState;
-    const orderBy = currentState.product.orderBy;
-    const searchText = currentState.product.searchText;
-    const colors = currentState.product.selectedColors;
-    const types = currentState.product.selectedTypes;
-    const brands = currentState.product.selectedBrands;
-    const selectedSex = currentState.product.selectedSex;
-    let pageNumber = currentState.product.pageNumber;
-    if (page) {
-      dispatch(setPageNumber(page));
-      pageNumber = page;
-    }
-    const response = await axios.get("http://localhost:5119/api/products", {
+    const {
+      orderBy,
+      selectedColors,
+      selectedTypes,
+      selectedBrands,
+      selectedSex,
+    } = currentState.product;
+
+    dispatch(setPageNumber(defaultPageNumber));
+    dispatch(saveSearchText(defaultSearchText));
+
+    const response = await axios.get(fullProductsUrl, {
       params: {
         orderBy: orderBy,
-        colors: colors.join(","),
-        types: types.join(","),
-        brands: brands.join(","),
+        colors: selectedColors.join(separator),
+        types: selectedTypes.join(separator),
+        brands: selectedBrands.join(separator),
+        searchKey: defaultSearchText,
+        pageNumber: defaultPageNumber.toString(),
+        sex: selectedSex,
+      },
+    });
+
+    return response.data;
+  }
+);
+
+export const searchProducts = createAsyncThunk(
+  "product/searchProducts",
+  async (_, { getState, dispatch }) => {
+    const currentState = getState() as RootState;
+    const { orderBy, searchText } = currentState.product;
+
+    dispatch(clearAllFiltersOnUI());
+    dispatch(setPageNumber(defaultPageNumber));
+
+    const response = await axios.get(fullProductsUrl, {
+      params: {
+        searchKey: searchText,
+        pageNumber: defaultPageNumber.toString(),
+        orderBy: orderBy,
+      },
+    });
+
+    return response.data;
+  }
+);
+
+export const sortProducts = createAsyncThunk(
+  "product/sortProducts",
+  async (_, { getState, dispatch }) => {
+    const currentState = getState() as RootState;
+    const {
+      orderBy,
+      selectedColors,
+      selectedTypes,
+      selectedBrands,
+      selectedSex,
+      searchText,
+    } = currentState.product;
+
+    dispatch(setPageNumber(defaultPageNumber));
+
+    const response = await axios.get(fullProductsUrl, {
+      params: {
+        orderBy: orderBy,
+        colors: selectedColors.join(separator),
+        types: selectedTypes.join(separator),
+        brands: selectedBrands.join(separator),
+        searchKey: searchText,
+        pageNumber: defaultPageNumber.toString(),
+        sex: selectedSex,
+      },
+    });
+
+    return response.data;
+  }
+);
+
+export const pageProducts = createAsyncThunk(
+  "product/pageProducts",
+  async (_, { getState, dispatch }) => {
+    const currentState = getState() as RootState;
+    const {
+      orderBy,
+      selectedColors,
+      selectedTypes,
+      selectedBrands,
+      selectedSex,
+      searchText,
+      pageNumber,
+    } = currentState.product;
+
+    const response = await axios.get(fullProductsUrl, {
+      params: {
+        orderBy: orderBy,
+        colors: selectedColors.join(separator),
+        types: selectedTypes.join(separator),
+        brands: selectedBrands.join(separator),
         searchKey: searchText,
         pageNumber: pageNumber.toString(),
         sex: selectedSex,
       },
     });
+
     return response.data;
   }
 );
@@ -75,9 +167,7 @@ export const fetchProducts = createAsyncThunk(
 export const fetchFilters = createAsyncThunk(
   "product/fetchFilters",
   async () => {
-    const response = await axios.get(
-      "http://localhost:5119/api/products/getfilters"
-    );
+    const response = await axios.get(getFiltersUrl);
 
     return response.data;
   }
@@ -133,18 +223,60 @@ const productSlice = createSlice({
         state.selectedSex = action.payload;
       }
     },
+    clearAllFiltersOnUI: (state) => {
+      state.selectedColors = [];
+      state.selectedTypes = [];
+      state.selectedBrands = [];
+      state.selectedSex = "";
+    },
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(filterProducts.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(filterProducts.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.products = action.payload.productList;
         state.pageCount = action.payload.numberOfPages;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(filterProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(searchProducts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(searchProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.products = action.payload.productList;
+        state.pageCount = action.payload.numberOfPages;
+      })
+      .addCase(searchProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(sortProducts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(sortProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.products = action.payload.productList;
+        state.pageCount = action.payload.numberOfPages;
+      })
+      .addCase(sortProducts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(pageProducts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(pageProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.products = action.payload.productList;
+        state.pageCount = action.payload.numberOfPages;
+      })
+      .addCase(pageProducts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
@@ -167,6 +299,7 @@ const productSlice = createSlice({
 });
 
 export const selectProducts = (state: RootState) => state.product.products;
+export const selectSearchText = (state: RootState) => state.product.searchText;
 
 export const {
   addProduct,
@@ -180,6 +313,7 @@ export const {
   saveSearchText,
   setPageNumber,
   setSelectedSex,
+  clearAllFiltersOnUI,
 } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -12,10 +12,12 @@ import ProductList from "./ProductList";
 import Loading, { LoadingSizes } from "../../common/Loading";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  fetchProducts,
+  filterProducts,
+  pageProducts,
   selectProducts,
   setOrderBy,
   setPageNumber,
+  sortProducts,
 } from "./ProductSlice";
 import BasicInput from "../../common/BasicInput";
 import CatalogFilterBar from "./filter/CatalogFilterBar";
@@ -31,19 +33,19 @@ function Catalog() {
 
   const handleSorting = (e: SelectChangeEvent) => {
     dispatch(setOrderBy(e.target.value));
-    dispatch(fetchProducts());
+    dispatch(sortProducts());
   };
 
   const handlePageChange = (e: ChangeEvent<unknown>, page: number) => {
     if (page != currentPage) {
       dispatch(setPageNumber(page));
-      dispatch(fetchProducts());
+      dispatch(pageProducts());
     }
   };
 
   useEffect(() => {
     if (productsStatus !== "loading") {
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     }
   }, [dispatch]); // TODO: determine why we must add dispatch to the useEffect dependency array
 
@@ -73,7 +75,7 @@ function Catalog() {
             handleChange={handleSorting}
             outerStyles={{
               background: "primary",
-              width: "25%",
+              width: "30%",
             }}
           >
             <MenuItem value="alphabetical">Alphabetical Order</MenuItem>
@@ -81,10 +83,10 @@ function Catalog() {
             <MenuItem value="priceDesc">{"Price (Highest to Lowest)"}</MenuItem>
           </BasicInput>
         </Grid>
-        <Grid item xs={4} md={3}>
+        <Grid item xs={12} sm={4} md={3}>
           <CatalogFilterBar />
         </Grid>
-        <Grid item xs={8} md={9}>
+        <Grid item xs={12} sm={8} md={9}>
           <ProductList products={products} />
         </Grid>
         <Grid item display="flex" justifyContent="flex-end" xs={12}>

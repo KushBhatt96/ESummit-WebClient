@@ -5,6 +5,8 @@ import HoverImage from "../../common/HoverImage";
 import Carousel from "../../common/Carousel";
 import Slider from "../../common/Slider";
 import { Slide } from "../../common/interfaces/CommonInterfaces";
+import { useAppSelector } from "../../app/hooks";
+import { selectIsLoggedIn } from "../auth/AuthSlice";
 
 const carouselSlides: Slide[] = [
   {
@@ -68,6 +70,7 @@ const sliderSlides: Slide[] = [
 ];
 
 function Home() {
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const { state } = useLocation();
 
   const getBoxStyles = (heightPercentage: number) => ({
@@ -81,7 +84,7 @@ function Home() {
   return (
     <Container sx={{ marginY: "2rem" }}>
       <Grid container spacing={6}>
-        {state && state.isLoggedIn && (
+        {state && state.isLoggedIn && isLoggedIn && (
           <Grid item xs={12}>
             <Alert severity="success">Login successful.</Alert>
           </Grid>
@@ -102,19 +105,29 @@ function Home() {
             cursorType="pointer"
           />
         </Grid>
-        <Grid item xs={8} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid
+          item
+          xs={12}
+          md={8}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
           <HoverImage
             firstImage="/images/woman_pink_shirt_action_picture.png"
             secondImage="/images/woman_pink_shirt_action_picture2.png"
-            outerStyles={getBoxStyles(40)}
+            outerStyles={getBoxStyles(45)}
             cursorType="pointer"
           />
         </Grid>
-        <Grid item xs={4} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid
+          item
+          xs={12}
+          md={4}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
           <HoverImage
             firstImage="/images/mens_blue_shirt_action_photo_1.png"
             secondImage="/images/mens_blue_shirt_action_photo_2.png"
-            outerStyles={getBoxStyles(40)}
+            outerStyles={getBoxStyles(45)}
             cursorType="pointer"
           />
         </Grid>
@@ -122,7 +135,7 @@ function Home() {
           <HoverImage
             firstImage="/images/white_jacket_action_photo1.png"
             secondImage="/images/black_jacket_action_photo1.png"
-            outerStyles={getBoxStyles(40)}
+            outerStyles={getBoxStyles(45)}
             cursorType="pointer"
           />
         </Grid>

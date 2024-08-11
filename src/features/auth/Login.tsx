@@ -14,15 +14,18 @@ import Loading, { LoadingSizes } from "../../common/Loading";
 import { loadCart } from "../cart/CartSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { login } from "./AuthSlice";
-import useForm from "../../common/hooks/useForm";
+import useForm, { FormField } from "../../common/hooks/useForm";
 
 const baseUrl = "http://localhost:5119/api";
 
 function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const { values, handleChange, reset } = useForm();
-  const { username, password } = values;
+  const initialState: FormField[] = [
+    { name: "username", value: "" },
+    { name: "password", value: "" },
+  ];
+  const { getValues, handleChange, reset } = useForm(initialState);
 
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -32,12 +35,10 @@ function Login() {
     e.preventDefault();
     try {
       setIsLoading(() => true);
+      const loginInfo: any = getValues();
       const { data, status } = await axios.post(
         `${baseUrl}/Account/Login`,
-        {
-          username,
-          password,
-        },
+        loginInfo,
         {
           withCredentials: true,
         }
@@ -59,6 +60,8 @@ function Login() {
   if (isLoading) {
     return <Loading message="Logging in.." size={LoadingSizes.MEDIUM} />;
   }
+
+  const values = getValues();
 
   return (
     <Grid container marginY="2rem">
@@ -119,7 +122,7 @@ function Login() {
               variant="contained"
               color="secondary"
               type="submit"
-              disabled={!username || !password}
+              disabled={!values.username || !values.password}
             >
               Submit
             </Button>

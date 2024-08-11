@@ -1,6 +1,7 @@
 import {
   Button,
   Grid,
+  IconButton,
   MenuItem,
   Paper,
   Select,
@@ -17,6 +18,7 @@ import {
 } from "./CartSlice";
 import { CartItem } from "../../models/CartItem";
 import { selectIsLoggedIn } from "../auth/AuthSlice";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Props {
   cartItem: CartItem;
@@ -97,7 +99,7 @@ function CartListItem({ cartItem }: Props) {
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1">
-                {`$${(product.price / 100).toFixed(2)}`}
+                {`$${product.price.toFixed(2)}`}
               </Typography>
             </Grid>
             <Grid item xs={2}>
@@ -116,8 +118,7 @@ function CartListItem({ cartItem }: Props) {
             </Grid>
             <Grid item xs={2}>
               <Typography variant="body1">
-                {/* {`$${totalPrice.toFixed(2)}`} */}
-                Some Price
+                {`$${totalPrice.toFixed(2)}`}
               </Typography>
             </Grid>
             <Grid item xs={8}>
@@ -127,19 +128,12 @@ function CartListItem({ cartItem }: Props) {
               item
               xs={4}
               display="flex"
-              justifyContent="space-between"
+              justifyContent="flex-end"
               marginTop={5}
             >
-              <Button
-                sx={{
-                  color: "action.active",
-                }}
-              >
-                Edit
-              </Button>
-              <Button onClick={handleRemoveFromCart} color="error">
-                Remove
-              </Button>
+              <IconButton onClick={handleRemoveFromCart}>
+                <DeleteIcon />
+              </IconButton>
             </Grid>
           </Grid>
         </Grid>

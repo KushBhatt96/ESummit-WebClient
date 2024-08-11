@@ -9,38 +9,39 @@ import { useNavigate } from "react-router-dom";
 import { RegisterDTO } from "../../models/RegisterDTO";
 import { toast } from "react-toastify";
 import axios from "axios";
-import useForm from "../../common/hooks/useForm";
+import useForm, { FormField, FieldType } from "../../common/hooks/useForm";
 
 const baseUrl = "http://localhost:5119/api";
 
 function Register() {
   const navigate = useNavigate();
 
+  const initialState: FormField[] = [
+    { name: "firstname", value: "" },
+    { name: "lastname", value: "" },
+    { name: "dateOfBirth", value: "" },
+    { name: "email", value: "" },
+    { name: "username", value: "" },
+    { name: "password", value: "" },
+    { name: "reenterPassword", value: "" },
+  ];
+
   const {
-    values,
-    errors,
+    getValues,
+    getErrors,
     handleChange,
     handleDateSelected,
     reset,
     isSubmitButtonDisabled,
-  } = useForm();
-  const { firstname, lastname, dateOfBirth, email, username, password } =
-    values;
+  } = useForm(initialState);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegisterSubmit = async () => {
     try {
       setIsLoading(() => true);
-
-      const registrationInfo: RegisterDTO = {
-        firstname,
-        lastname,
-        dateOfBirth,
-        email,
-        username,
-        password,
-      };
+      const registrationInfo: RegisterDTO = getValues();
+      console.log(registrationInfo);
       const response = await axios.post(
         `${baseUrl}/Account/Register`,
         registrationInfo
@@ -64,6 +65,8 @@ function Register() {
       <Loading message="Registering new user..." size={LoadingSizes.MEDIUM} />
     );
   }
+
+  const errors = getErrors();
 
   return (
     <Grid container marginY="2rem">

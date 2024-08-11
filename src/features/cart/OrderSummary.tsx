@@ -48,7 +48,7 @@ function OrderSummary() {
       <Button
         variant="contained"
         color="success"
-        sx={{ marginBottom: 2 }}
+        sx={{ marginBottom: 2, color: "white" }}
         fullWidth
       >
         CHECKOUT

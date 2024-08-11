@@ -82,6 +82,7 @@ function ProductDetail() {
             borderRadius: "5px",
             "&:hover": { border: "2px #006666 solid" },
             marginY: "2rem",
+            width: "100%",
           }}
           onClick={handleZoomOut}
         />
@@ -93,6 +94,7 @@ function ProductDetail() {
             background: "linear-gradient(#b2d8d8, #66b2b2)",
             borderRadius: "5px",
             "&:hover": { border: "2px #006666 solid" },
+            width: "100%",
           }}
           onClick={handleZoomOut}
         />
@@ -130,7 +132,7 @@ function ProductDetail() {
           <Typography variant="h3">{product.name}</Typography>
           <Divider sx={{ mb: 2 }} />
           <Typography variant="h4" color="secondary">
-            ${(product.price / 100).toFixed(2)}
+            ${product.price.toFixed(2)}
           </Typography>
           <Divider sx={{ mb: 2 }} />
           <TableContainer>

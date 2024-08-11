@@ -72,8 +72,12 @@ function ProductCard({ product }: Props) {
     setIsOpen(false);
   };
 
+  const handleMaxAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
   const MaxQuantityAlert = (
-    <Alert severity="error" color="error">
+    <Alert severity="error" color="error" onClose={handleMaxAlertClose}>
       Maximum quantity reached for item.
     </Alert>
   );
@@ -106,13 +110,12 @@ function ProductCard({ product }: Props) {
           />
         </CardMedia>
         <CardContent>
-          <Box height="6rem">
-            <Typography gutterBottom fontWeight="bold">
+          <Box>
+            <Typography gutterBottom fontWeight="bold" height="2.5rem">
               {name}
             </Typography>
-
             <Typography gutterBottom color="secondary" variant="h6">
-              ${(price / 100).toFixed(2)}
+              ${price.toFixed(2)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {type}

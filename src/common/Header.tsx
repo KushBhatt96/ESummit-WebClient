@@ -19,10 +19,18 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectIsLoggedIn } from "../features/auth/AuthSlice";
 import { grey, teal } from "@mui/material/colors";
-import { useState, KeyboardEvent, MouseEvent, BaseSyntheticEvent } from "react";
 import {
-  fetchProducts,
+  useState,
+  KeyboardEvent,
+  MouseEvent,
+  BaseSyntheticEvent,
+  ChangeEvent,
+} from "react";
+import {
+  filterProducts,
   saveSearchText,
+  searchProducts,
+  selectSearchText,
   setSelectedSex,
 } from "../features/catalog/ProductSlice";
 
@@ -74,16 +82,16 @@ function Header({
   };
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const [searchText, setSearchText] = useState("");
+  const searchText = useAppSelector(selectSearchText);
   const [hoveringCatalog, setHoveringCatalog] = useState(false);
 
   const handleSearchKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      dispatch(saveSearchText(searchText));
       if (location.pathname === "/catalog") {
-        dispatch(fetchProducts(1));
+        dispatch(searchProducts());
       } else {
         navigate("/catalog");
+        dispatch(searchProducts());
       }
     }
   };
@@ -99,12 +107,23 @@ function Header({
   const handleSetSex = (e: BaseSyntheticEvent) => {
     dispatch(setSelectedSex(e.target.text));
     if (location.pathname === "/catalog") {
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     }
   };
 
+  const handleSetSearchText = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    dispatch(saveSearchText(e.target.value));
+  };
+
   return (
-    <AppBar position="sticky" onMouseLeave={handleCatalogLinkMouseLeave}>
+    <AppBar
+      position="sticky"
+      onMouseLeave={handleCatalogLinkMouseLeave}
+      sx={{ background: `${theme.palette.primary.main}` }}
+      enableColorOnDark
+    >
       <Toolbar
         sx={{
           display: "flex",
@@ -118,14 +137,14 @@ function Header({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Box component={NavLink} to="/">
+          <Box component={NavLink} to="/" display="flex">
             <Box
               component="img"
               src="/images/esummit_transparent.png"
-              height="50%"
-              width="50%"
+              height="3.5rem"
+              width="4rem"
               sx={{
-                "&:hover": { border: "1px teal solid" },
+                "&:hover": { border: "2px teal solid" },
               }}
             />
           </Box>
@@ -153,7 +172,7 @@ function Header({
             id="outlined-basic"
             label="Search"
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={handleSetSearchText}
             onKeyDown={handleSearchKeyDown}
             variant="outlined"
             size="small"
@@ -190,9 +209,19 @@ function Header({
             size="large"
             edge="start"
             color="inherit"
-            sx={{ mr: 2 }}
+            sx={{
+              mr: 2,
+            }}
           >
-            <Badge badgeContent={cartQuantity} color="secondary">
+            <Badge
+              badgeContent={cartQuantity}
+              color="secondary"
+              sx={{
+                "&:hover": {
+                  color: teal[400],
+                },
+              }}
+            >
               <ShoppingCart />
             </Badge>
           </IconButton>

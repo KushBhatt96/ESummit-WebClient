@@ -10,7 +10,7 @@ import {
   addBrandFilter,
   addColorFilter,
   addTypeFilter,
-  fetchProducts,
+  filterProducts,
   removeBrandFilter,
   removeColorFilter,
   removeTypeFilter,
@@ -33,30 +33,30 @@ function CatalogFilterBar() {
   const handleColorSelected = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       dispatch(addColorFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     } else {
       dispatch(removeColorFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     }
   };
 
   const handleTypeSelected = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       dispatch(addTypeFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     } else {
       dispatch(removeTypeFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     }
   };
 
   const handleBrandSelected = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       dispatch(addBrandFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     } else {
       dispatch(removeBrandFilter(e.target.name));
-      dispatch(fetchProducts(1));
+      dispatch(filterProducts());
     }
   };
 

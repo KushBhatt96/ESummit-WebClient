@@ -6,9 +6,12 @@ import { Cart } from "../../models/Cart";
 import { Product } from "../../models/Product";
 import Cookies from "js-cookie";
 import authSlice, { logoutOffline } from "./../auth/AuthSlice";
+import { baseUrl } from "../../common/constants/constants";
 
 // CONSTANTS
-const baseUrl = "http://localhost:5119";
+const defaultHeaders = {
+  "Content-Type": "application/json",
+};
 
 // STATE
 interface CartState {
@@ -26,43 +29,68 @@ const initialState: CartState = {
 // THUNKS
 export const loadCart = createAsyncThunk(
   "cart/getCart",
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
     const currentState = getState() as RootState;
     const localCartItems = currentState.cart.cartItems;
 
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    if (localCartItems && localCartItems.length !== 0) {
+    const appendCartRequest = async () =>
       await axios(`${baseUrl}/api/cartItems/AppendLocalCartItems`, {
         method: "post",
         data: localCartItems,
-        headers: headers,
         withCredentials: true,
       });
+
+    const getCartRequest = async () =>
+      await axios(`${baseUrl}/api/cart`, {
+        method: "get",
+        withCredentials: true,
+      });
+
+    const refresh = async () =>
+      await axios(`${baseUrl}/api/Token/Refresh`, {
+        method: "post",
+        withCredentials: true,
+      });
+
+    try {
+      if (localCartItems && localCartItems.length !== 0) {
+        await appendCartRequest();
+      }
+
+      const response = await getCartRequest();
+      return response.data;
+    } catch (error: any) {
+      if (error.status === 401) {
+        try {
+          await refresh();
+        } catch (error: any) {
+          if (error.status === 400) {
+            dispatch(logoutOffline());
+            dispatch(clearCartFromMemory());
+          }
+          throw error;
+        }
+        if (localCartItems && localCartItems.length !== 0) {
+          await appendCartRequest();
+        }
+
+        const response = await getCartRequest();
+
+        return response.data;
+      } else {
+        throw error;
+      }
     }
-
-    const response = await axios(`${baseUrl}/api/cart`, {
-      method: "get",
-      headers: headers,
-      withCredentials: true,
-    });
-
-    return response.data;
   }
 );
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (productId: number, { dispatch }) => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
     const request = async () =>
       await axios(`${baseUrl}/api/cartItems/${productId}`, {
         method: "post",
-        headers: headers,
+        headers: defaultHeaders,
         withCredentials: true,
       });
     const refresh = async () =>
@@ -98,18 +126,22 @@ export const addToCart = createAsyncThunk(
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
   async (cartItemId: number) => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
     await axios(`${baseUrl}/api/cartItems/${cartItemId}`, {
       method: "delete",
-      headers: headers,
+      headers: defaultHeaders,
       withCredentials: true,
     });
     return cartItemId;
   }
 );
+
+export const clearCart = createAsyncThunk("cart/clearCart", async () => {
+  await axios(`${baseUrl}/api/cartItems`, {
+    method: "delete",
+    headers: defaultHeaders,
+    withCredentials: true,
+  });
+});
 
 export const updateCartItemQuantity = createAsyncThunk(
   "cart/updateCartItemQuantity",
@@ -175,6 +207,10 @@ const cartSlice = createSlice({
       state.cartItems = state.cartItems.filter((item) => item.productId !== id);
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
+    clearCartOffline: (state) => {
+      state.cartItems = [];
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    },
     updateCartItemQuantityOffine: (
       state,
       action: PayloadAction<{ productId: number; quantity: number }>
@@ -189,6 +225,7 @@ const cartSlice = createSlice({
 
       if (cartItem) {
         cartItem.quantity = quantity;
+        cartItem.totalPrice = cartItem.quantity * cartItem.product.price;
       }
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
@@ -258,6 +295,17 @@ const cartSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
+      .addCase(clearCart.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(clearCart.fulfilled, (state, action: PayloadAction) => {
+        state.status = "succeeded";
+        state.cartItems = [];
+      })
+      .addCase(clearCart.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
       .addCase(updateCartItemQuantity.pending, (state) => {
         state.status = "loading";
       })
@@ -297,6 +345,7 @@ export const {
   addToCartOffline,
   loadCartOffline,
   removeCartItemOffline,
+  clearCartOffline,
   updateCartItemQuantityOffine,
   clearCartFromMemory,
 } = cartSlice.actions;

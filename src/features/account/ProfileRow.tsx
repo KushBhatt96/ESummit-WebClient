@@ -6,7 +6,7 @@ import ProfileEditDialog from "./ProfileEditDialog";
 
 interface Props {
   title: string;
-  value: string;
+  value: string | JSX.Element;
   isEditable?: boolean;
   isDeletable?: boolean;
 }
@@ -44,7 +44,7 @@ function ProfileRow({
           <Typography variant="h6">{title}</Typography>
         </TableCell>
         <TableCell sx={{ borderBottom: "none" }}>
-          <Typography variant="body1">{value ? value : children}</Typography>
+          <Typography variant="body1">{value}</Typography>
         </TableCell>
         {isEditable && (
           <TableCell sx={{ borderBottom: "none" }}>
