@@ -18,7 +18,6 @@ import {
 } from "@mui/material/colors";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Header from "../common/Header";
 import AppRoutes from "./Routes";
 import { useAppDispatch, useAppSelector } from "./hooks";
@@ -40,7 +39,7 @@ function App() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const handleThemeChanged = () => {
+  const handleThemeChange = () => {
     setIsDarkMode(!isDarkMode);
   };
 
@@ -120,7 +119,7 @@ function App() {
       </Backdrop>
       <Header
         isDarkMode={isDarkMode}
-        onThemeChanged={handleThemeChanged}
+        onThemeChanged={handleThemeChange}
         cartQuantity={cartQuantity}
         onHandleLogout={handleLogout}
       />

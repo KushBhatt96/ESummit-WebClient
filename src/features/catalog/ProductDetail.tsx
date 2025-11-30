@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
+  Badge,
   Box,
+  Button,
   Container,
   Divider,
   Grid,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -16,10 +19,19 @@ import { Product } from "../../models/Product";
 import agent from "../../api/agent";
 import NotFound from "../../common/errors/NotFound";
 import Loading, { LoadingSizes } from "../../common/Loading";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { addToCart, addToCartOffline, selectCartItem } from "../cart/CartSlice";
+import { selectIsLoggedIn } from "../auth/AuthSlice";
+import CartItemAddedDialog from "../../common/confirmationDialogs/CartItemAddedDialog";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function ProductDetail() {
   const { id } = useParams<{ id: string }>();
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
+  const [isOpen, setIsOpen] = useState(false);
   const [product, setProduct] = useState<Product | undefined>();
   const [loading, setLoading] = useState(true);
   const [isZoomedIntoProduct, setIsZoomedIntoProduct] = useState(false);
@@ -42,6 +54,12 @@ function ProductDetail() {
     getProduct();
   }, [id]);
 
+  const associatedCartItem = useAppSelector((state) => {
+    if (id) {
+      return selectCartItem(state, parseInt(id, 10));
+    }
+  });
+
   if (loading)
     return (
       <Loading
@@ -53,6 +71,32 @@ function ProductDetail() {
   if (!product) {
     return <NotFound />;
   }
+
+  // TODO: Possibly make max quanity come from backend
+  const handleAddToCart = () => {
+    if (!associatedCartItem || associatedCartItem.quantity < 5) {
+      if (isLoggedIn) {
+        dispatch(addToCart(product.productId));
+      } else {
+        dispatch(addToCartOffline(product));
+      }
+      handleDialogOpen();
+    } else {
+      //TODO: add error modal here
+    }
+  };
+
+  const handleDialogOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   const handleZoomIn = () => {
     setIsZoomedIntoProduct(true);
@@ -103,71 +147,78 @@ function ProductDetail() {
   }
 
   return (
-    <Container sx={{ marginY: "2rem" }}>
-      <Grid container columnSpacing={4}>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Box
-            component="img"
-            src={product.pictureUrl}
-            alt={product.name}
-            sx={{
-              width: "100%",
-              height: "100%",
-              cursor: "zoom-in",
-              background: "linear-gradient(#b2d8d8, #66b2b2)",
-              borderRadius: "5px",
-              "&:hover": { border: "2px #006666 solid" },
-            }}
-            onClick={handleZoomIn}
-          />
+    <>
+      <CartItemAddedDialog
+        isOpen={isOpen}
+        handleClose={handleDialogClose}
+        product={product}
+      />
+      <Container sx={{ marginY: "2rem" }}>
+        <IconButton size="small" sx={{ marginY: 1 }} onClick={handleGoBack}>
+          <ArrowBackIcon />
+        </IconButton>
+        <Grid container columnSpacing={4}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box
+              component="img"
+              src={product.pictureUrl}
+              alt={product.name}
+              sx={{
+                width: "100%",
+                height: "100%",
+                cursor: "zoom-in",
+                background: "linear-gradient(#b2d8d8, #66b2b2)",
+                borderRadius: "5px",
+                "&:hover": { border: "2px #006666 solid" },
+              }}
+              onClick={handleZoomIn}
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <Typography variant="h3">{product.name}</Typography>
+            <Divider sx={{ mb: 2 }} />
+            <Typography variant="h4" color="secondary">
+              ${product.price.toFixed(2)}
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <TableContainer sx={{ marginY: "10px" }}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Description</strong>
+                    </TableCell>
+                    <TableCell>{product.description}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Type</strong>
+                    </TableCell>
+                    <TableCell>{product.type}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Brand</strong>
+                    </TableCell>
+                    <TableCell>{product.brand}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Button variant="contained" fullWidth onClick={handleAddToCart}>
+              Add to cart
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={8}>
-          <Typography variant="h3">{product.name}</Typography>
-          <Divider sx={{ mb: 2 }} />
-          <Typography variant="h4" color="secondary">
-            ${product.price.toFixed(2)}
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <strong>Name</strong>
-                  </TableCell>
-                  <TableCell>{product.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong>Description</strong>
-                  </TableCell>
-                  <TableCell>{product.description}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong>Type</strong>
-                  </TableCell>
-                  <TableCell>{product.type}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <strong>Brand</strong>
-                  </TableCell>
-                  <TableCell>{product.brand}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   );
 }
 

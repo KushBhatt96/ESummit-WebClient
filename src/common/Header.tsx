@@ -3,7 +3,6 @@ import {
   AppBar,
   Badge,
   Box,
-  Button,
   IconButton,
   List,
   ListItem,
@@ -11,18 +10,16 @@ import {
   MenuItem,
   TextField,
   Toolbar,
-  Typography,
   useTheme,
 } from "@mui/material";
 
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectIsLoggedIn } from "../features/auth/AuthSlice";
-import { grey, teal } from "@mui/material/colors";
+import { teal } from "@mui/material/colors";
 import {
   useState,
   KeyboardEvent,
-  MouseEvent,
   BaseSyntheticEvent,
   ChangeEvent,
 } from "react";
@@ -34,11 +31,7 @@ import {
   setSelectedSex,
 } from "../features/catalog/ProductSlice";
 
-const midLinks = [
-  { id: 1, title: " Browse Catalog", path: "/catalog" },
-  // { id: 2, title: "About", path: "/about" },
-  // { id: 3, title: "Contact", path: "/contact" },
-];
+const midLinks = [{ id: 1, title: "Browse Catalog", path: "/catalog" }];
 
 const rightLinks = [
   { id: 1, title: "Login", path: "/login" },
@@ -64,7 +57,7 @@ function Header({
   const theme = useTheme();
   const catalogMenuOptions = useAppSelector((state) => state.product.sex);
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -144,7 +137,7 @@ function Header({
               height="3.5rem"
               width="4rem"
               sx={{
-                "&:hover": { border: "2px teal solid" },
+                "&:hover": { border: "2px teal dotted" },
               }}
             />
           </Box>

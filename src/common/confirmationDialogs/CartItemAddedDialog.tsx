@@ -72,7 +72,7 @@ function CartItemAddedDialog({ isOpen, handleClose, product }: Props) {
                     {product.type}
                   </TableRow>
                   <TableRow>
-                    <strong style={{ marginRight: "1ch" }}>Price:</strong>
+                    <strong style={{ marginRight: "1ch" }}>Price:</strong>$
                     {product.price}
                   </TableRow>
                 </TableBody>
